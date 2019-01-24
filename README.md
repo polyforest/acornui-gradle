@@ -20,27 +20,36 @@ In the example above, `Opinionated B` plugin applies `Opinionated A` which appli
 
 This allows users to select which tier of functionality they want to interface with in their downstream build by applying whichever plugin they want.
 
+---
+
 ## Plugins
-While the names of each plugin are in flux, the following plugins are planned.
+Plugins found in this repo...
+
+*though more are TBPlanned*
 
 ### KMP Boilerplate Base Plugin
-*(KMP --> Kotlin Multiplatform)
-Build a single multiplatform Kotlin module using centrally defined properties to configure targets and define boilerplate dependencies.
+(KMP --> Kotlin Multiplatform)
+Define custom presets that can configure a target and its default source set together for a single\* multiplatform Kotlin module using centrally defined properties.  The base plugin does not implicitly apply custom presets, but provides the mechanisms for defining them and applying them explicitly.
 
-**Applies...** Kotlin Multiplatform Plugin
+\* Future updates will provide better multi-module projects (a la multiprojects in Gradle lingo).
+
+**id* | com.polyforest.kmp-boilerplate-base
+**Applies**  | Kotlin Multiplatform Plugin
 
 #### How To Use It
-TBD
+*TBD*
 
 #### Features
+*TBDeveloped*
 
 #### Planned Features - Alpha
 * **KMP Presets** - mechanism for defining presets that tie target configuration and sets of dependencies together (*see KMP Dependency Set*).
 * **KMP Dependency Set** - a set of dependencies to be applied to a target.  KMP Presets have a default set of dependencies they will apply to their corresponding default source set (provided by Kotlin Multiplatform Plugin).
-* **KMP Preset Extensions** - runtime safe extensions for applying presets to a Kotlin Multiplatform Plugin target and its default source set.
+* **KMP Preset Extensions** - runtime safe extensions for applying presets to a specific Kotlin Multiplatform Plugin target and its default source set or apply to all Kotlin Multiplatform Plugin targets of a specific type
 
 #### Planned Features - Beta
 * **Multi-Module Support Integration** - a different base plugin that provides extensions for generally desired multi-module project functionality and sane property management for multiprojects (Gradle).
+* **KMP Preset Application By Type** - apply a KMP Preset to all targets (and their corresponding default source sets)
 
 #### Planned Features - 1.0
 * **Multiple Dependency Sets** - KMP Preset can hold multiple dependency sets in addition to the default in order to be able to support easily declaring common dependencies for additional source sets for a target.
