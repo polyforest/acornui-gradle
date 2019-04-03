@@ -34,7 +34,7 @@ tasks {
 	val consumer by registering(GradleBuild::class) {
 		group = "sample"
 		dir = file("consumer")
-		tasks = listOf("clean")
+		tasks = listOf(":normal-library-module:clean")
 	}
 
 	consumer {
