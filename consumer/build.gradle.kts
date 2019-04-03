@@ -1,8 +1,9 @@
-
-val GRADLE_VERSION: String by extra
-tasks.withType<Wrapper> {
-	gradleVersion = GRADLE_VERSION
-	distributionType = Wrapper.DistributionType.ALL
+allprojects {
+	val GRADLE_VERSION: String by extra
+	tasks.withType<Wrapper> {
+		gradleVersion = GRADLE_VERSION
+		distributionType = Wrapper.DistributionType.ALL
+	}
 }
 
 afterEvaluate {
