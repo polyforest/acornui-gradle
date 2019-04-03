@@ -14,4 +14,4 @@ pluginManagement {
 val ACORNUI_PLUGIN_MARKER_PREFIX: String by settings
 val ACORNUI_PLUGIN_VERSION: String by settings
 
-include("normal-library-module")
+include("normal-library-module", "builder-app-module")
