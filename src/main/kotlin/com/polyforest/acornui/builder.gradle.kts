@@ -4,12 +4,13 @@ import com.polyforest.acornui.build.*
 
 /**
  * Plugin:  com.polyforest.acornui.builder
+ * 
  * Used in Acorn UI consumer projects for the builder module.
  * JS compilation main defaults to "noCall"
  */
 
 plugins {
-	id("com.polyforest.acornui.basic")
+	id("com.polyforest.acornui.app-basic")
 }
 
 kotlin {

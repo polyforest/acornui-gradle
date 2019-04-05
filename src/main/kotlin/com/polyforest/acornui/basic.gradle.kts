@@ -5,6 +5,7 @@ import com.polyforest.acornui.build.*
 /**
  * Plugin:  com.polyforest.acornui.basic
  * Used in acornui and consumer projects for basic kotlin multiplatform modules.
+ * 
  * JS compilation main defaults to "noCall"
  */
 
@@ -14,16 +15,6 @@ repositories {
 
 plugins {
 	id("org.jetbrains.kotlin.multiplatform")
-}
-
-// Enforce all Acorn UI dependencies use the same version
-configurations.configureEach {
-	resolutionStrategy.eachDependency {
-		if (requested.group == "com.polyforest" && requested.name.startsWith("acornui-")) {
-			useVersion(ACORNUI_VERSION)
-			because("Adhering to the default target version for Acorn UI")
-		}
-	}
 }
 
 val defaults = mapOf(
