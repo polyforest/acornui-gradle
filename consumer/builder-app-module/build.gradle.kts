@@ -5,3 +5,7 @@ plugins {
 }
 
 group = "$group.builder"
+
+repositories {
+	mavenLocal()
+}
