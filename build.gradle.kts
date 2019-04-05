@@ -42,14 +42,15 @@ tasks {
 	}
 }
 
-val GRADLE_VERSION: String by project
+val GRADLE_VERSION: String by extra
 tasks.withType<Wrapper> {
 	gradleVersion = GRADLE_VERSION
 	distributionType = Wrapper.DistributionType.ALL
 }
 
 afterEvaluate {
-	val clean = tasks.withType(Delete::class).tryNamed(BasePlugin.CLEAN_TASK_NAME) ?: tasks.register<Delete>(BasePlugin.CLEAN_TASK_NAME)
+	val clean = tasks.withType(Delete::class).tryNamed(BasePlugin.CLEAN_TASK_NAME)
+		?: tasks.register<Delete>(BasePlugin.CLEAN_TASK_NAME)
 	clean {
 		group = "build"
 		description = """
