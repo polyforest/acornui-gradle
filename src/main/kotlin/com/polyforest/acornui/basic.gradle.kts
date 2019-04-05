@@ -124,7 +124,7 @@ tasks.withType<Wrapper> {
 }
 
 afterEvaluate {
-	tasks.withType(Test::class).configureEach {
+	tasks.withType(Test::class.java).configureEach {
 		jvmArgs("-ea")
 	}
 }
