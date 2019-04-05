@@ -27,7 +27,6 @@ configurations.configureEach {
 }
 
 val defaults = mapOf(
-	"GRADLE_VERSION" to "5.3",
 	"ACORNUI_VERSION" to "1.0.0-SNAPSHOT",
 	"PRODUCT_GROUP" to "",
 	"PRODUCT_VERSION" to "1.0.0-SNAPSHOT",
@@ -47,7 +46,6 @@ fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : St
 val ACORNUI_VERSION: String = extraOrDefault("ACORNUI_VERSION")
 val KOTLIN_LANGUAGE_VERSION: String = extraOrDefault("KOTLIN_LANGUAGE_VERSION")
 val KOTLIN_JVM_TARGET: String = extraOrDefault("KOTLIN_JVM_TARGET")
-val GRADLE_VERSION: String = extraOrDefault("GRADLE_VERSION")
 val PRODUCT_VERSION: String = extraOrDefault("PRODUCT_VERSION")
 val PRODUCT_GROUP: String = extraOrDefault("PRODUCT_GROUP")
 
@@ -118,20 +116,11 @@ kotlin {
 	}
 }
 
-tasks.withType<Wrapper> {
-	gradleVersion = GRADLE_VERSION
-	distributionType = Wrapper.DistributionType.ALL
-}
-
 afterEvaluate {
 	tasks.withType(Test::class.java).configureEach {
 		jvmArgs("-ea")
 	}
 }
 
-afterEvaluate {
-	val clean = tasks.withType(Delete::class).tryNamed(BasePlugin.CLEAN_TASK_NAME) ?: tasks.register<Delete>(BasePlugin.CLEAN_TASK_NAME)
-	clean {
-		delete(file("out/"))
-	}
-}
+// Enhance basice `clean` task description
+maybeCreateCleanTask()
