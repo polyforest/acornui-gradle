@@ -1,4 +1,3 @@
-
 plugins {
 	`kotlin-dsl`
 	`maven-publish`
@@ -34,7 +33,7 @@ tasks {
 	val consumer by registering(GradleBuild::class) {
 		group = "sample"
 		dir = file("consumer")
-		tasks = listOf(":normal-module:tasks", "normal-app-module:tasks", ":builder-app-module:tasks")
+		tasks = listOf(":normal-module:tasks", "normal-app-module:tasks", ":builder-app-module:tasks", ":app-app-module:tasks")
 	}
 
 	consumer {
