@@ -1,0 +1,1 @@
+I am the commonMain resource of normal-app-module!
