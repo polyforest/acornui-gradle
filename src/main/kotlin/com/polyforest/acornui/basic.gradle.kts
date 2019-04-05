@@ -115,11 +115,3 @@ afterEvaluate {
 		delete(file("out/"))
 	}
 }
-
-fun <T : Task> TaskCollection<T>.tryNamed(name: String): TaskProvider<T>? {
-	return try {
-		named(name)
-	} catch (e: UnknownTaskException) {
-		null
-	}
-}
