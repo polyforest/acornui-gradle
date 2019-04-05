@@ -4,6 +4,11 @@ allprojects {
 		gradleVersion = GRADLE_VERSION
 		distributionType = Wrapper.DistributionType.ALL
 	}
+
+	configurations.all {
+		// check for updates every build
+		resolutionStrategy.cacheChangingModulesFor(0, "seconds")
+	}
 }
 
 afterEvaluate {
