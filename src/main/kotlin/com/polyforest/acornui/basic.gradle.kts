@@ -16,8 +16,19 @@ plugins {
 	id("org.jetbrains.kotlin.multiplatform")
 }
 
+// Enforce all Acorn UI dependencies use the same version
+configurations.configureEach {
+	resolutionStrategy.eachDependency {
+		if (requested.group == "com.polyforest" && requested.name.startsWith("acornui-")) {
+			useVersion(ACORNUI_VERSION)
+			because("Adhering to the default target version for Acorn UI")
+		}
+	}
+}
+
 val defaults = mapOf(
 	"GRADLE_VERSION" to "5.3",
+	"ACORNUI_VERSION" to "1.0.0-SNAPSHOT",
 	"PRODUCT_GROUP" to "",
 	"PRODUCT_VERSION" to "1.0.0-SNAPSHOT",
 	"KOTLIN_LANGUAGE_VERSION" to "1.3",
@@ -33,6 +44,7 @@ fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : St
 	}
 }
 
+val ACORNUI_VERSION: String = extraOrDefault("ACORNUI_VERSION")
 val KOTLIN_LANGUAGE_VERSION: String = extraOrDefault("KOTLIN_LANGUAGE_VERSION")
 val KOTLIN_JVM_TARGET: String = extraOrDefault("KOTLIN_JVM_TARGET")
 val GRADLE_VERSION: String = extraOrDefault("GRADLE_VERSION")
