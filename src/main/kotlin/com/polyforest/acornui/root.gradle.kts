@@ -31,6 +31,7 @@ allprojects {
 }
 
 // Delete the IDE default build directory upon `clean`
+// Also, for some reason a 'build' directory at the root project (with empty contents) gets created
 maybeCreateCleanTask {
-	delete("out/")
+	delete("out/", "build/")
 }
