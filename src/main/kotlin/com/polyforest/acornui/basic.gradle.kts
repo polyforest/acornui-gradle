@@ -1,5 +1,13 @@
 package com.polyforest.acornui
 
+import com.polyforest.acornui.build.*
+
+/**
+ * Plugin:  com.polyforest.acornui.basic
+ * Used in acornui and consumer projects for basic kotlin multiplatform modules.
+ * JS compilation main defaults to "noCall"
+ */
+
 repositories {
 	jcenter()
 }
