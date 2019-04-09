@@ -28,6 +28,10 @@ import java.io.File
  * Provide standard configuration for root build scripts of Acorn UI app projects
  */
 
+plugins {
+	id("com.polyforest.acornui.root")
+}
+
 tasks {
 	// Setup IDE composite support tasks if developer has opted in by setting the system property
 	if (System.getProperty("composite.intellij")?.toBoolean() == true) {
