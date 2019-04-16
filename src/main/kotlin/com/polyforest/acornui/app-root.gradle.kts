@@ -32,6 +32,13 @@ plugins {
 	id("com.polyforest.acornui.root")
 }
 
+val defaults = mapOf(
+	"AP_TGROUP_PREFIX" to ".ap."
+)
+
+// Provided for com/polyforest/acornui/build/tasks.kt temporarily to remove this from app project gradle.properties.
+val AP_TGROUP_PREFIX by extra(defaults.getValue("AP_TGROUP_PREFIX"))
+
 tasks {
 	// Setup IDE composite support tasks if developer has opted in by setting the system property
 	if (System.getProperty("composite.intellij")?.toBoolean() == true) {

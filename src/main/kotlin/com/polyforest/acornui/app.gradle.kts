@@ -38,6 +38,9 @@ val defaults = mapOf(
 	"AP_TGROUP_PREFIX" to ".ap."
 )
 
+// Provided for com/polyforest/acornui/build/tasks.kt temporarily to remove this from app project gradle.properties.
+val AP_TGROUP_PREFIX by extra(defaults.getValue("AP_TGROUP_PREFIX"))
+
 fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : String {
 	return try {
 		@Suppress("UNCHECKED_CAST")
