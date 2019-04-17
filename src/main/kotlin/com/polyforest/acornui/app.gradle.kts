@@ -33,14 +33,6 @@ plugins {
 	id("com.polyforest.acornui.app-basic")
 }
 
-val defaults = mapOf(
-	"LWJGL_VERSION" to "3.2.1",
-	"AP_TGROUP_PREFIX" to ".ap."
-)
-
-// Provided for com/polyforest/acornui/build/tasks.kt temporarily to remove this from app project gradle.properties.
-val AP_TGROUP_PREFIX by extra(defaults.getValue("AP_TGROUP_PREFIX"))
-
 fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : String {
 	return try {
 		@Suppress("UNCHECKED_CAST")
@@ -49,6 +41,37 @@ fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : St
 		default
 	}
 }
+
+fun String.camelCase(): String {
+	val splitBySpace = this.split(' ')
+	val splitByHyphen = this.split('-')
+
+	return if (splitBySpace.size > 1) {
+		splitBySpace
+	}
+	else {
+		splitByHyphen
+	}.joinToString("") { it.capitalize() }
+}
+
+fun jvmMain(projectName: String, projectGroup: String? = null): String {
+	val productGroup = projectGroup ?: extraOrDefault("PRODUCT_GROUP", "").let {
+		if (it.isNotBlank())
+			"$it."
+		else
+			it
+	}
+	return "${productGroup}jvm.${projectName.camelCase()}JvmKt"
+}
+
+val defaults = mapOf(
+	"LWJGL_VERSION" to "3.2.1",
+	"AP_TGROUP_PREFIX" to ".ap.",
+	"JVM_MAIN" to jvmMain(rootProject.name)
+)
+
+// Provided for com/polyforest/acornui/build/tasks.kt temporarily to remove this from app project gradle.properties.
+val AP_TGROUP_PREFIX by extra(defaults.getValue("AP_TGROUP_PREFIX"))
 
 kotlin {
 	js {
@@ -665,7 +688,8 @@ tasks {
 		document("Run jvm app.", ApplicationPlugin.APPLICATION_GROUP)
 		dependsOn(jvmMainClasses, populateJvmResources)
 
-		main = "com.matrixprecise.jvm.CatariJvmKt"
+		val JVM_MAIN = extraOrDefault("JVM_MAIN")
+		main = JVM_MAIN
 		classpath(
 			kotlin.targets["jvm"].compilations["main"].output.allOutputs.files,
 			configurations[jvmRuntimeCpConfigName]
