@@ -167,29 +167,38 @@ val hasValidAcornUiHomeThatExists by lazy {
 	} else false
 }
 
-// Helper objects
-object SourceFileManipulator {
+// Helpers
+/**
+ * A utility class for applying a list of [FileProcessor] methods to a set of files.
+ */
+class SourceFileManipulator {
 
-	/**
-	 * Iterates through [files] and applies [processors] to their contents in place.
-	 */
-	fun <T : Iterable<File>> process(files: T, processors: List<FileProcessor>) {
-		files.forEach {
-			if (it.isFile) {
-				var src = it.readText()
-				for (processor in processors) {
-					src = processor(src, it)
-				}
-				it.writeText(src)
-			}
+	private val fileTypeProcessorMap = stringMapOf<ArrayList<FileProcessor>>()
+
+	fun addProcessor(processor: FileProcessor, vararg fileExtension: String) {
+		for (extension in fileExtension) {
+			val extensionLower = extension.toLowerCase()
+			if (!fileTypeProcessorMap.containsKey(extension)) fileTypeProcessorMap[extensionLower] = ArrayList()
+			fileTypeProcessorMap[extensionLower]!!.add(processor)
 		}
 	}
 
 	/**
-	 * Iterates through [files] and applies [processor] to their contents in place.
+	 * Applies added processors that match the [file]'s extension and its children recursively if [file] is a directory.
+	 * 
+	 * @see	File.walkTopDown for traversal details
 	 */
-	fun <T : Iterable<File>> process(files: T, processor: FileProcessor) {
-		process(files, listOf(processor))
+	fun process(file: File) {
+		for (i in file.walkTopDown()) {
+			if (i.isFile) {
+				val processors = fileTypeProcessorMap[i.extension.toLowerCase()] ?: continue
+				var src = i.readText()
+				for (processor in processors) {
+					src = processor(src, i)
+				}
+				i.writeText(src)
+			}
+		}
 	}
 }
 
@@ -229,6 +238,7 @@ object KotlinMonkeyPatcher {
 	fun optimizeProductionCode(src: String, file: File? = null): String {
 		var result = src
 		result = simplifyArrayListGet(result)
+		result = simplifyArrayListSet(result)
 		result = stripCce(result)
 		result = stripRangeCheck(result)
 		result += "function alwaysTrue() { return true; }"
@@ -239,9 +249,10 @@ object KotlinMonkeyPatcher {
 	 * Strips type checking that only results in a class cast exception.
 	 */
 	private fun stripCce(src: String): String {
-		val d = '$'
-		return Regex("""Kotlin\.is(Type|Array|Char|CharSequence|Number)(\((.*?) \? tmp\$d :
-			|(Kotlin\.)?throw(\S*)\(\))""".trimMargin()).replace(src, "alwaysTrue\$2")
+		return Regex("""Kotlin\.is(Type|Array|Char|CharSequence|Number)(\((.*?) \? tmp\$(?:_\d+)? : (Kotlin\.)?throw(\w*?)\(\))""").replace(
+			src,
+			"alwaysTrue\$2"
+		)
 	}
 
 	private fun stripRangeCheck(src: String): String {
@@ -439,7 +450,12 @@ tasks {
 		}
 
 		doLast {
-			SourceFileManipulator.process(source, ScriptCacheBuster::replaceVersionWithModTime)
+			val manipulator = SourceFileManipulator()
+			manipulator.addProcessor(
+				ScriptCacheBuster::replaceVersionWithModTime,
+				*ScriptCacheBuster.extensions.toTypedArray()
+			)
+			source.forEach { manipulator.process(it) }
 		}
 	}
 
@@ -582,9 +598,10 @@ tasks {
 		include("**/*.js")
 
 		doLast {
-			SourceFileManipulator.process(source, KotlinMonkeyPatcher::optimizeProductionCode)
+			val manipulator = SourceFileManipulator()
+			manipulator.addProcessor(KotlinMonkeyPatcher::optimizeProductionCode, "js")
+			source.forEach { manipulator.process(it) }
 		}
-
 	}
 
 	val minifyJs by registering(SourceTask::class) {
@@ -867,4 +884,14 @@ fun maybeAddBasicResourcesAsResourceDir() {
 			logger.warn("Until $acornuiHomePropName is added as a property or passed as an env var, basic starter " +
 								"assets will not be used")
 	}
+}
+
+// Cannot use buildscript to put acornui-utils on the classpath for script plugin
+// Belongs to acornui-utils/src/commonMain/kotlin/com/acornui/collection/MapUtils.kt
+// TODO | De-inline this when plugin converts to non-script binary plugin 
+var _stringMap: () -> MutableMap<String, Any?> = { HashMap() }
+
+fun <V> stringMapOf(vararg pairs: Pair<String, V>): MutableMap<String, V> {
+	@Suppress("UNCHECKED_CAST")
+	return (_stringMap() as MutableMap<String, V>).apply { putAll(pairs) }
 }
