@@ -88,34 +88,34 @@ kotlin {
 	}
 
 	sourceSets {
-		commonMain {
+		val commonMain by getting {
 			dependencies {
 				implementation(kotlin("stdlib-common"))
 			}
 		}
-		commonTest {
+		val commonTest by getting {
 			dependencies {
 				implementation(kotlin("test-common"))
 				implementation(kotlin("test-annotations-common"))
 			}
 		}
-		named("jvmMain") {
+		jvm().compilations["main"].defaultSourceSet {
 			dependencies {
 				implementation(kotlin("stdlib-jdk8"))
 			}
 		}
-		named("jvmTest") {
+		jvm().compilations["test"].defaultSourceSet {
 			dependencies {
 				implementation(kotlin("test"))
 				implementation(kotlin("test-junit"))
 			}
 		}
-		named("jsMain") {
+		js().compilations["main"].defaultSourceSet {
 			dependencies {
 				implementation(kotlin("stdlib-js"))
 			}
 		}
-		named("jsTest") {
+		js().compilations["test"].defaultSourceSet {
 			dependencies {
 				implementation(kotlin("test-js"))
 			}
@@ -129,5 +129,5 @@ afterEvaluate {
 	}
 }
 
-// Enhance basice `clean` task description
+// Enhance basic `clean` task description to list exactly what it cleans
 maybeCreateCleanTask()
