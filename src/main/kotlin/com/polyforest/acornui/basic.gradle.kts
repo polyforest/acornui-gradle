@@ -38,7 +38,8 @@ val defaults = mapOf(
 	"PRODUCT_GROUP" to "",
 	"PRODUCT_VERSION" to "1.0.0-SNAPSHOT",
 	"KOTLIN_LANGUAGE_VERSION" to "1.3",
-	"KOTLIN_JVM_TARGET" to "1.8"
+	"KOTLIN_JVM_TARGET" to "1.8",
+	"JS_MODULE_KIND" to "amd"
 )
 
 fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : String {
@@ -55,6 +56,7 @@ val KOTLIN_LANGUAGE_VERSION: String = extraOrDefault("KOTLIN_LANGUAGE_VERSION")
 val KOTLIN_JVM_TARGET: String = extraOrDefault("KOTLIN_JVM_TARGET")
 val PRODUCT_VERSION: String = extraOrDefault("PRODUCT_VERSION")
 val PRODUCT_GROUP: String = extraOrDefault("PRODUCT_GROUP")
+val JS_MODULE_KIND: String = extraOrDefault("JS_MODULE_KIND")
 
 version = PRODUCT_VERSION
 group = PRODUCT_GROUP
@@ -63,7 +65,11 @@ kotlin {
 	js {
 		compilations.all {
 			kotlinOptions {
-				moduleKind = "amd"
+				moduleKind = JS_MODULE_KIND.also { kind ->
+					val validModuleKinds = listOf("plain", "amd", "commonjs", "umd")
+					if (!validModuleKinds.any { kind == it })
+						logger.warn("JS module kind is invalid.  It must be one of the following: ${validModuleKinds.joinToString(", ")}")
+				}
 				sourceMap = true
 				sourceMapEmbedSources = "always"
 				main = "noCall"
