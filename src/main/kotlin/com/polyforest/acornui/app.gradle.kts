@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.gradle.plugin.*
 import java.awt.Desktop
 import java.net.URI
 import com.polyforest.acornui.build.*
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsDce
 
 /**
  * Plugin:  com.polyforest.acornui.app
@@ -31,6 +32,7 @@ import com.polyforest.acornui.build.*
 
 plugins {
 	id("com.polyforest.acornui.app-basic")
+	id("kotlin-dce-js")
 }
 
 fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : String {
@@ -185,7 +187,7 @@ class SourceFileManipulator {
 
 	/**
 	 * Applies added processors that match the [file]'s extension and its children recursively if [file] is a directory.
-	 * 
+	 *
 	 * @see	File.walkTopDown for traversal details
 	 */
 	fun process(file: File) {
@@ -487,6 +489,14 @@ tasks {
 		}
 	}
 
+
+	withType<KotlinJsDce> {
+		// Disable JS DCE for all test compilations
+		if (name.contains("TestKotlin")) {
+			dceOptions.devMode = true
+		}
+	}
+
 	// Task declarations
 	// Js - Shared Tasks (dev+prod)
 	val jsMainClasses by existing
@@ -509,9 +519,17 @@ tasks {
 		}
 	}
 
-	fun <S : Task, T : Task> T.onlyIfJsOutputChanged() {
+	fun <T : Task> T.onlyIfJsOutputChanged() {
 		onlyIf {
 			assembleJsOutput.get().didWork
+		}
+	}
+
+	val runDceJsKotlin by getting(KotlinJsDce::class)
+	fun <T : Task> T.onlyIfProdJsOutputChanged() {
+		onlyIfJsOutputChanged()
+		onlyIf {
+			runDceJsKotlin.didWork
 		}
 	}
 
@@ -584,11 +602,20 @@ tasks {
 		delete(webFolder, webDistFolder)
 	}
 
+	val build by getting
+	build.dependsOn.removeIf { it is KotlinJsDce }
+
 	// Js - Prod tasks
 	val stageJsOutputForProcessingProd by registering(Copy::class) {
 		dependsOn(writeJsResourceManifestFile)
-		from(getJsOutputStagingDir()).exclude("**/*.js.map")
+
+		from(getJsOutputStagingDir())
+		exclude("**/*.js.map")
 		configureCommonStageTargetOutputForProcessingTask(target = "js", type = "prod")
+
+		into(jsLibsRelDir) {
+			from(runDceJsKotlin)
+		}
 	}
 	fun getJsProdOutputStagingDir() = stageJsOutputForProcessingProd.get().destinationDir
 
@@ -817,8 +844,6 @@ class AppTargetFacade(
 		// TODO: Make this leverage dependencies so it is more accurate and less brittle
 		val mainCompilation =
 			p.kotlin.targets[target.name].compilations[DEFAULT_MAIN_COMPILATION_NAME]
-		// Pseudo-Code:TODO | Remove
-		// println("CHECK IT:  " + rootProject.subprojects)
 
 		fc + mainCompilation.allKotlinSourceSets.fold(fc) { innerFC: FileCollection, sourceSet: KotlinSourceSet ->
 			innerFC + sourceSet.resources.sourceDirectories
@@ -888,7 +913,7 @@ fun maybeAddBasicResourcesAsResourceDir() {
 
 // Cannot use buildscript to put acornui-utils on the classpath for script plugin
 // Belongs to acornui-utils/src/commonMain/kotlin/com/acornui/collection/MapUtils.kt
-// TODO | De-inline this when plugin converts to non-script binary plugin 
+// TODO | De-inline this when plugin converts to non-script binary plugin
 var _stringMap: () -> MutableMap<String, Any?> = { HashMap() }
 
 fun <V> stringMapOf(vararg pairs: Pair<String, V>): MutableMap<String, V> {
