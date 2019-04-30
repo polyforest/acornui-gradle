@@ -68,16 +68,18 @@ tasks {
 
 						private val noMatchDefault = "no match"
 						fun formatMatchResult(result: String = noMatchDefault): String {
-							return "\t$shortname [${ if (!result.isBlank())
+							return "\t$shortname [${if (!result.isBlank())
 								result.toUpperCase()
 							else
-								noMatchDefault }]"
+								noMatchDefault}]"
 						}
 					}
 				}
 
-				logger.quiet("Converting ${project.name}'s IDE library dependencies (via a composite build setup) to " +
-									 "IDE module dependencies.")
+				logger.quiet(
+					"Converting ${project.name}'s IDE library dependencies (via a composite build setup) to IDE " +
+							"module dependencies."
+				)
 
 				val imlFiles = ideMetadataDir.walkTopDown().filter { child: File ->
 					child.exists() && child.isFile && child.extension == "iml"
@@ -110,7 +112,8 @@ tasks {
 			group = "help"
 
 			doLast {
-				logger.quiet("""
+				logger.quiet(
+					"""
 					Throughout these instructions, Acorn UI is the 'provider' and an App is the 'consumer'
 
 					If you're an old pro and have already configured your App IDE project as a composite build, skip straight to step 4 below.
@@ -142,7 +145,8 @@ tasks {
 					refreshing Gradle dependencies from the Gradle Tool window.
 
 					If you experience any others, please let us know by filing an issue (https://github.com/polyforest/acornui/issues), or better yet, submit a PR with changes to documentation.
-				""".trimIndent())
+				""".trimIndent()
+				)
 			}
 		}
 
@@ -150,7 +154,8 @@ tasks {
 			description = "Provides context for working with composite builds created/configured in Intellij."
 			group = "help"
 			doLast {
-				logger.quiet("""
+				logger.quiet(
+					"""
 					Composite builds allow developers to work on projects side by side in a seamless way.  Intellij creates and manages composite builds created within the IDE differently than those created via other methods.
 
 					Primarily, the build is concerned with the fact that dependencies between provider and consumer builds (e.g. framework project and app project respectively) end up being represented as Gradle produced jars since they are setup as libraries.  This has a few negative knock on effects.
@@ -166,7 +171,8 @@ tasks {
 					What's next?
 
 					Running the ${gettingStartedWithIdeCompositeBuilds.name} task will provide you instructions on getting started from ground zero after cloning an existing app project repo.
-				""".trimIndent())
+				""".trimIndent()
+				)
 			}
 		}
 
@@ -174,11 +180,13 @@ tasks {
 			description = "Default task that shows short message to orient new composite build users."
 
 			doLast {
-				logger.quiet("""
+				logger.quiet(
+					"""
 						IDE Composite Build configuration flag detected.  In the help task group...
 							for general context, run the ${aboutIdeCompositeBuilds.name} task
 							for setup instructions, run the ${gettingStartedWithIdeCompositeBuilds.name} task
-					""".trimIndent())
+					""".trimIndent()
+				)
 			}
 		}
 
