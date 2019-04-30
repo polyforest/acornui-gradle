@@ -35,7 +35,7 @@ plugins {
 	id("kotlin-dce-js")
 }
 
-fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : String {
+fun extraOrDefault(name: String, default: String = defaults.getValue(name)): String {
 	return try {
 		@Suppress("UNCHECKED_CAST")
 		extra[name] as String
@@ -50,8 +50,7 @@ fun String.camelCase(): String {
 
 	return if (splitBySpace.size > 1) {
 		splitBySpace
-	}
-	else {
+	} else {
 		splitByHyphen
 	}.joinToString("") { it.capitalize() }
 }
@@ -141,8 +140,10 @@ fun Project.getAllOutDir(target: String, subdirectory: File? = null): Provider<D
 }
 
 val aggregatedUnprocessedRelDir = File("unprocessed")
-val allOutUnprocessedJsDir = getAllOutDir(AppTargetFacade.DEFAULT_JS_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
-val allOutUnprocessedJvmDir = getAllOutDir(AppTargetFacade.DEFAULT_JVM_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
+val allOutUnprocessedJsDir =
+	getAllOutDir(AppTargetFacade.DEFAULT_JS_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
+val allOutUnprocessedJvmDir =
+	getAllOutDir(AppTargetFacade.DEFAULT_JVM_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
 val jsLibsRelDir = File("lib")
 val assetsRelDir = File("assets")
 // Destination root for js build variations hosted by the IDE's built-in web server
@@ -155,9 +156,14 @@ val useBasicAssetsPropName = "USE_BASIC_ASSETS"
 val acornuiHomePropName = "ACORNUI_HOME"
 typealias FileProcessor = (src: String, file: File) -> String
 
-val hasRequestedBasicAssets by lazy { project.hasProperty(useBasicAssetsPropName) && project.property(useBasicAssetsPropName).toString().toBoolean() }
+val hasRequestedBasicAssets by lazy {
+	val usesBasicAssets = project.property(useBasicAssetsPropName).toString().toBoolean()
+	project.hasProperty(useBasicAssetsPropName) && usesBasicAssets
+}
 val hasValidAcornUiHome by lazy {
-	if (!project.hasProperty(acornuiHomePropName)) false else {
+	if (!project.hasProperty(acornuiHomePropName))
+		false
+	else {
 		val acornUiHome = project.property(acornuiHomePropName) as String
 		acornUiHome.isBlank().not()
 	}
@@ -312,7 +318,7 @@ tasks {
 			when {
 				query != null && type == "dev" -> "$query&$defaultQuery"
 				query == null && type == "dev" -> defaultQuery
-				else -> query
+				else                           -> query
 			}
 
 		val entryPoint = path?.let { webRoot.resolve(it) } ?: webRoot.resolve("index.html")
@@ -341,7 +347,7 @@ tasks {
 			group == null && groupPrefix == null -> AP_TGROUP_PREFIX + defaultGroup
 			group == null && groupPrefix != null -> groupPrefix + defaultGroup
 			group != null && groupPrefix == null -> AP_TGROUP_PREFIX + group
-			else -> groupPrefix + group
+			else                                 -> groupPrefix + group
 		}
 
 		description?.let { task.description = it }
@@ -350,7 +356,8 @@ tasks {
 	fun <T : Task> T.validateAcornUiHomeToUseBasicAssets() {
 		doFirst {
 			if (hasRequestedBasicAssets && !hasValidAcornUiHomeThatExists)
-				throw InvalidUserDataException("""
+				throw InvalidUserDataException(
+					"""
 					Starter assets were requested, but a valid $acornuiHomePropName could not be found.
 					Please set $acornuiHomePropName in one of the following locations:
 
@@ -358,7 +365,8 @@ tasks {
 					-set it in your `${project.gradle.gradleUserHomeDir}/gradle.properties` file => `ACORNUI_HOME=<absolute_path>`
 
 					For more details, see: https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_configuration_properties
-				""".trimIndent())
+				""".trimIndent()
+				)
 		}
 	}
 
@@ -481,10 +489,12 @@ tasks {
 			if (desktop.isSupported(Desktop.Action.BROWSE)) {
 				desktop.browse(uri)
 			} else {
-				logger.warn("""
+				logger.warn(
+					"""
 					Cannot open browser to: ${uri.toASCIIString()}
 					The build environment OS does not support the Java Desktop API.
-				""".trimIndent())
+				""".trimIndent()
+				)
 			}
 		}
 	}
@@ -546,6 +556,7 @@ tasks {
 		configureCommonStageTargetOutputForProcessingTask(target = "js", type = "dev")
 		onlyIfJsOutputChanged()
 	}
+
 	fun getJsOutputStagingDir() = stageJsOutputForProcessing.get().destinationDir
 
 	val packJsAssets by registering(JavaExec::class) {
@@ -617,6 +628,7 @@ tasks {
 			from(runDceJsKotlin)
 		}
 	}
+
 	fun getJsProdOutputStagingDir() = stageJsOutputForProcessingProd.get().destinationDir
 
 	val optimizeJs by registering(SourceTask::class) {
@@ -697,6 +709,7 @@ tasks {
 		configureCommonStageTargetOutputForProcessingTask(target = "jvm", type = "dev")
 		onlyIfJvmOutputChanged()
 	}
+
 	fun getJvmOutputStagingDir() = stageJvmOutputForProcessing.get().destinationDir
 
 	val packJvmAssets by registering(JavaExec::class) {
@@ -763,9 +776,11 @@ class AppTargetFacade(
 		} catch (e: Exception) {
 			rootProject.subprojects
 		}
-	private val mainCompilation = target.map {
-		it.compilations.named<KotlinCompilationToRunnableFiles<KotlinCommonOptions>>(DEFAULT_MAIN_COMPILATION_NAME).get()
-	}
+	private val mainCompilation
+		get() = target.map {
+			it.compilations.named<KotlinCompilationToRunnableFiles<KotlinCommonOptions>>(DEFAULT_MAIN_COMPILATION_NAME)
+				.get()
+		}
 
 	/**
 	 * All sources for a given multi-platform target's module
@@ -906,8 +921,10 @@ fun maybeAddBasicResourcesAsResourceDir() {
 				project.kotlin.targets.all(addBasicSkinResourcesAsResourceDir)
 			}
 		} else
-			logger.warn("Until $acornuiHomePropName is added as a property or passed as an env var, basic starter " +
-								"assets will not be used")
+			logger.warn(
+				"Until $acornuiHomePropName is added as a property or passed as an env var, basic starter assets " +
+						"will not be used"
+			)
 	}
 }
 
