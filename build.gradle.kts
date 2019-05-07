@@ -19,6 +19,11 @@ plugins {
 	`maven-publish`
 }
 
+kotlinDslPluginOptions {
+	// Suppress the experimental warning from kotlin-dsl
+	experimentalWarning.set(false)
+}
+
 val PRODUCT_GROUP: String by extra
 val PRODUCT_VERSION: String by extra
 group = PRODUCT_GROUP
