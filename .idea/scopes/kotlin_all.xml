@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="kotlin-all" pattern="lib:org.jetbrains.kotlin..*" />
+</component>

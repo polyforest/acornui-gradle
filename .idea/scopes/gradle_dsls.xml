@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="gradle-dsls" pattern="$_gradle_dsl_groovy||$_gradle_dsl_kotlin" />
+</component>
