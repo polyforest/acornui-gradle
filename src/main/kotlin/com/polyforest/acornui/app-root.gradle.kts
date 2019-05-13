@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Poly Forest
+ * Copyright 2019 Poly Forest, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,6 @@
 package com.polyforest.acornui
 
 import com.polyforest.acornui.build.document
-import org.gradle.api.DefaultTask
-import org.gradle.kotlin.dsl.existing
-import org.gradle.kotlin.dsl.getValue
-import org.gradle.kotlin.dsl.registering
-import java.io.File
 
 /**
  * Plugin:  com.polyforest.acornui.app-root
@@ -31,13 +26,6 @@ import java.io.File
 plugins {
 	id("com.polyforest.acornui.root")
 }
-
-val defaults = mapOf(
-	"AP_TGROUP_PREFIX" to ".ap."
-)
-
-// Provided for com/polyforest/acornui/build/tasks.kt temporarily to remove this from app project gradle.properties.
-val AP_TGROUP_PREFIX by extra(defaults.getValue("AP_TGROUP_PREFIX"))
 
 tasks {
 	// Setup IDE composite support tasks if developer has opted in by setting the system property

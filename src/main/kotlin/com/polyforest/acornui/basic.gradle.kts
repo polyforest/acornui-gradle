@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Poly Forest
+ * Copyright 2019 Poly Forest, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,8 @@
 
 package com.polyforest.acornui
 
-import com.polyforest.acornui.build.*
+import com.polyforest.acornui.build.AUI
+import com.polyforest.acornui.build.maybeCreateCleanTask
 
 /**
  * Plugin:  com.polyforest.acornui.basic
@@ -33,30 +34,12 @@ plugins {
 	id("org.jetbrains.kotlin.multiplatform")
 }
 
-val defaults = mapOf(
-	"ACORNUI_VERSION" to "1.0.0-SNAPSHOT",
-	"PRODUCT_GROUP" to "",
-	"PRODUCT_VERSION" to "1.0.0-SNAPSHOT",
-	"KOTLIN_LANGUAGE_VERSION" to "1.3",
-	"KOTLIN_JVM_TARGET" to "1.8",
-	"JS_MODULE_KIND" to "amd"
-)
-
-fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : String {
-	return try {
-		@Suppress("UNCHECKED_CAST")
-		extra[name] as String
-	} catch (e: Exception) {
-		default
-	}
-}
-
-val ACORNUI_VERSION: String = extraOrDefault("ACORNUI_VERSION")
-val KOTLIN_LANGUAGE_VERSION: String = extraOrDefault("KOTLIN_LANGUAGE_VERSION")
-val KOTLIN_JVM_TARGET: String = extraOrDefault("KOTLIN_JVM_TARGET")
-val PRODUCT_VERSION: String = extraOrDefault("PRODUCT_VERSION")
-val PRODUCT_GROUP: String = extraOrDefault("PRODUCT_GROUP")
-val JS_MODULE_KIND: String = extraOrDefault("JS_MODULE_KIND")
+val acorn = AUI(project)
+val KOTLIN_LANGUAGE_VERSION by acorn.defaults
+val KOTLIN_JVM_TARGET by acorn.defaults
+val PRODUCT_VERSION by acorn.defaults
+val PRODUCT_GROUP by acorn.defaults
+val JS_MODULE_KIND by acorn.defaults
 
 version = PRODUCT_VERSION
 group = PRODUCT_GROUP

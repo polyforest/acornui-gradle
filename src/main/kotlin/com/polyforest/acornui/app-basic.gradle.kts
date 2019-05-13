@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Poly Forest
+ * Copyright 2019 Poly Forest, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 package com.polyforest.acornui
 
+import com.polyforest.acornui.build.AUI
+
 /**
  * Plugin:  com.polyforest.acornui.app-basic
  * Provide standard configuration for basic modules (not `app` or `builder` or root) of Acorn UI app projects
@@ -29,20 +31,8 @@ plugins {
 	id("com.polyforest.acornui.basic")
 }
 
-val defaults = mapOf(
-	"ACORNUI_VERSION" to "1.0.0-SNAPSHOT"
-)
-
-fun extraOrDefault(name: String, default: String = defaults.getValue(name)) : String {
-	return try {
-		@Suppress("UNCHECKED_CAST")
-		extra[name] as String
-	} catch (e: Exception) {
-		default
-	}
-}
-
-val ACORNUI_VERSION: String = extraOrDefault("ACORNUI_VERSION")
+val acorn = AUI(project)
+val ACORNUI_VERSION by acorn.defaults
 
 // Enforce all Acorn UI dependencies use the same version
 configurations.configureEach {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Poly Forest
+ * Copyright 2019 Poly Forest, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,32 @@
  * limitations under the License.
  */
 
+// Enabling causes strange compiler error where it detects a nullable receiver instance that wasn't detectable statically
+// Also might cause the app plugin to publish at the top level of the repo instead of with a group
+// @file:Suppress("UNUSED_VARIABLE")
+
 package com.polyforest.acornui
 
+import com.polyforest.acornui.App_gradle.FileProcessor
+import com.polyforest.acornui.build.AUI
+import com.polyforest.acornui.build.acornui
+import com.polyforest.acornui.build.acornuiDependencyNotation
+import com.polyforest.acornui.build.document
+import com.polyforest.acornui.build.maybeAddBasicResourcesAsResourceDir
+import com.polyforest.acornui.build.validateAcornUiHomeToUseBasicAssets
+import gradle.kotlin.dsl.accessors._c36447fcf39b14501017ce8c9e28d6f5.kotlin
+import gradle.kotlin.dsl.accessors._c36447fcf39b14501017ce8c9e28d6f5.sourceSets
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
-import org.jetbrains.kotlin.gradle.plugin.*
+import org.jetbrains.kotlin.gradle.dsl.KotlinJsDce
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import java.awt.Desktop
 import java.net.URI
-import com.polyforest.acornui.build.*
-import org.jetbrains.kotlin.gradle.dsl.KotlinJsDce
+import kotlin.collections.set
 
 /**
  * Plugin:  com.polyforest.acornui.app
@@ -35,44 +52,7 @@ plugins {
 	id("kotlin-dce-js")
 }
 
-fun extraOrDefault(name: String, default: String = defaults.getValue(name)): String {
-	return try {
-		@Suppress("UNCHECKED_CAST")
-		extra[name] as String
-	} catch (e: Exception) {
-		default
-	}
-}
-
-fun String.camelCase(): String {
-	val splitBySpace = this.split(' ')
-	val splitByHyphen = this.split('-')
-
-	return if (splitBySpace.size > 1) {
-		splitBySpace
-	} else {
-		splitByHyphen
-	}.joinToString("") { it.capitalize() }
-}
-
-fun jvmMain(projectName: String, projectGroup: String? = null): String {
-	val productGroup = projectGroup ?: extraOrDefault("PRODUCT_GROUP", "").let {
-		if (it.isNotBlank())
-			"$it."
-		else
-			it
-	}
-	return "${productGroup}jvm.${projectName.camelCase()}JvmKt"
-}
-
-val defaults = mapOf(
-	"LWJGL_VERSION" to "3.2.1",
-	"AP_TGROUP_PREFIX" to ".ap.",
-	"JVM_MAIN" to jvmMain(rootProject.name)
-)
-
-// Provided for com/polyforest/acornui/build/tasks.kt temporarily to remove this from app project gradle.properties.
-val AP_TGROUP_PREFIX by extra(defaults.getValue("AP_TGROUP_PREFIX"))
+val acorn = AUI(project)
 
 kotlin {
 	js {
@@ -99,7 +79,7 @@ kotlin {
 				implementation(acornui("webgl-backend-jvm"))
 				implementation(acornui("utils-jvm"))
 
-				val LWJGL_VERSION = extraOrDefault("LWJGL_VERSION")
+				val LWJGL_VERSION by acorn.defaults
 				val lwjglGroup = "org.lwjgl"
 				val lwjglName = "lwjgl"
 				val natives = arrayOf("windows", "macos", "linux")
@@ -152,30 +132,8 @@ val webFolder = webFolderRoot.resolve("www")
 val webDistFolder = webFolderRoot.resolve("wwwDist")
 val ghDocsFolder = file("docs")
 val targetCompilations = { target: String -> kotlin.targets[target].compilations }
-val useBasicAssetsPropName = "USE_BASIC_ASSETS"
-val acornuiHomePropName = "ACORNUI_HOME"
 typealias FileProcessor = (src: String, file: File) -> String
 
-val hasRequestedBasicAssets by lazy {
-	val usesBasicAssets = project.property(useBasicAssetsPropName).toString().toBoolean()
-	project.hasProperty(useBasicAssetsPropName) && usesBasicAssets
-}
-val hasValidAcornUiHome by lazy {
-	if (!project.hasProperty(acornuiHomePropName))
-		false
-	else {
-		val acornUiHome = project.property(acornuiHomePropName) as String
-		acornUiHome.isBlank().not()
-	}
-}
-val hasValidAcornUiHomeThatExists by lazy {
-	if (hasValidAcornUiHome) {
-		val acornUiHome = project.property(acornuiHomePropName) as String
-		File(acornUiHome).exists()
-	} else false
-}
-
-// Helpers
 /**
  * A utility class for applying a list of [FileProcessor] methods to a set of files.
  */
@@ -194,7 +152,7 @@ class SourceFileManipulator {
 	/**
 	 * Applies added processors that match the [file]'s extension and its children recursively if [file] is a directory.
 	 *
-	 * @see	File.walkTopDown for traversal details
+	 * @see    File.walkTopDown for traversal details
 	 */
 	fun process(file: File) {
 		for (i in file.walkTopDown()) {
@@ -289,7 +247,7 @@ object KotlinMonkeyPatcher {
 }
 
 // Setup basic skin directory as resource directory...
-maybeAddBasicResourcesAsResourceDir()
+maybeAddBasicResourcesAsResourceDir(project)
 
 tasks {
 
@@ -336,39 +294,6 @@ tasks {
 
 	val devURI by lazy { getLocalAppServerUri(project = project, type = "dev") }
 	val prodURI by lazy { getLocalAppServerUri(project = project, type = "prod") }
-
-	// Configuration Helpers
-	fun <T : Task> T.document(description: String? = null, group: String? = null, groupPrefix: String? = null) {
-		val task = this
-		val defaultGroup = "other"
-		val AP_TGROUP_PREFIX by defaults
-
-		task.group = when {
-			group == null && groupPrefix == null -> AP_TGROUP_PREFIX + defaultGroup
-			group == null && groupPrefix != null -> groupPrefix + defaultGroup
-			group != null && groupPrefix == null -> AP_TGROUP_PREFIX + group
-			else                                 -> groupPrefix + group
-		}
-
-		description?.let { task.description = it }
-	}
-
-	fun <T : Task> T.validateAcornUiHomeToUseBasicAssets() {
-		doFirst {
-			if (hasRequestedBasicAssets && !hasValidAcornUiHomeThatExists)
-				throw InvalidUserDataException(
-					"""
-					Starter assets were requested, but a valid $acornuiHomePropName could not be found.
-					Please set $acornuiHomePropName in one of the following locations:
-
-					-pass it on the command line as an environment variable => `ORG_GRADLE_PROJECT_ACORNUI_HOME=<absolute_path>`
-					-set it in your `${project.gradle.gradleUserHomeDir}/gradle.properties` file => `ACORNUI_HOME=<absolute_path>`
-
-					For more details, see: https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_configuration_properties
-				""".trimIndent()
-				)
-		}
-	}
 
 	val auiBuildTasksTool by lazy {
 		BuildTool(
@@ -745,7 +670,7 @@ tasks {
 		document("Run jvm app.", ApplicationPlugin.APPLICATION_GROUP)
 		dependsOn(jvmMainClasses, populateJvmResources)
 
-		val JVM_MAIN = extraOrDefault("JVM_MAIN")
+		val JVM_MAIN by acorn.defaults
 		main = JVM_MAIN
 		classpath(
 			kotlin.targets["jvm"].compilations["main"].output.allOutputs.files,
@@ -888,52 +813,13 @@ class BuildTool(val project: Project, configurationName: String, val main: Strin
 	}
 }
 
-/**
- * Adds `basic` starter resources as a resource directory if specified by `USE_BASIC_ASSETS` property
- *
- * Configuration is added to all compilations that have resource processing.
- * Configuration will apply to all targets and compilations added in the future.
- * `ACORNUI_HOME` must be defined (e.g. passed in as env var)
- *
- * Note: When `ACORNUI_HOME` is not provided via `gradle.properties`, importing the gradle project in the IDE will not
- * mark the directory as a resource in IDE project metadata.
- */
-fun maybeAddBasicResourcesAsResourceDir() {
-	// Do not check for existence of the Acorn Ui home dir so project can be imported without it set.
-	if (hasRequestedBasicAssets) {
-		if (hasValidAcornUiHome) {
-			val USE_BASIC_ASSETS: String by project.extra
-			val ACORNUI_HOME: String by project.extra
-			val basicSkinDir = File(ACORNUI_HOME, "skins/basic/resources")
-			// Use closures so it is applied to all future targets and compilations added
-			// Using nested closure, though untested whether it is necessary
-			val compilationClosure = closureOf<KotlinCompilation<KotlinCommonOptions>> {
-				if (this is KotlinCompilationWithResources) {
-					defaultSourceSet.resources.let {
-						it.setSrcDirs(listOf(basicSkinDir, it.srcDirs))
-					}
-				}
-			}
-			val addBasicSkinResourcesAsResourceDir = closureOf<KotlinTarget> {
-				compilations.all(compilationClosure)
-			}
-			if (USE_BASIC_ASSETS.toBoolean() && basicSkinDir.exists()) {
-				project.kotlin.targets.all(addBasicSkinResourcesAsResourceDir)
-			}
-		} else
-			logger.warn(
-				"Until $acornuiHomePropName is added as a property or passed as an env var, basic starter assets " +
-						"will not be used"
-			)
-	}
-}
-
 // Cannot use buildscript to put acornui-utils on the classpath for script plugin
 // Belongs to acornui-utils/src/commonMain/kotlin/com/acornui/collection/MapUtils.kt
 // TODO | De-inline this when plugin converts to non-script binary plugin
 var _stringMap: () -> MutableMap<String, Any?> = { HashMap() }
 
 fun <V> stringMapOf(vararg pairs: Pair<String, V>): MutableMap<String, V> {
-	@Suppress("UNCHECKED_CAST")
+	// Pseudo-Code:TODO | Undo this once stable
+	// @Suppress("UNCHECKED_CAST")
 	return (_stringMap() as MutableMap<String, V>).apply { putAll(pairs) }
 }
