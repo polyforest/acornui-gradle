@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
-
 /*
  * Copyright 2019 Poly Forest
  *
@@ -17,9 +14,15 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
  * limitations under the License.
  */
 
+import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+import java.net.URL
+
 plugins {
 	`kotlin-dsl`
 	`maven-publish`
+	id("org.jetbrains.dokka")
 }
 
 kotlinDslPluginOptions {
@@ -35,7 +38,9 @@ version = PRODUCT_VERSION
 repositories {
 	jcenter()
 }
-
+kotlin {
+	this.sourceSets["main"].kotlin.sourceDirectories
+}
 val KOTLIN_VERSION: String by extra
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
@@ -73,7 +78,12 @@ tasks {
 	val consumer by registering(GradleBuild::class) {
 		group = "sample"
 		dir = file("consumer")
-		tasks = listOf(":normal-module:tasks", "normal-app-module:tasks", ":builder-app-module:tasks", ":app-app-module:tasks")
+		tasks = listOf(
+			":normal-module:tasks",
+			"normal-app-module:tasks",
+			":builder-app-module:tasks",
+			":app-app-module:tasks"
+		)
 	}
 
 	consumer {
@@ -114,4 +124,80 @@ fun <T : Task> TaskCollection<T>.tryNamed(name: String): TaskProvider<T>? {
 	} catch (e: UnknownTaskException) {
 		null
 	}
+}
+
+// Documentation
+val latestJdkVersion = 11
+val minimumSupportedJdkVersion = 6
+val maximumSupportedJdkVersion = latestJdkVersion
+val javaSourceDirs = sourceSets.main.map { it.java.sourceDirectories }
+val kotlinSourceDirs = kotlin.sourceSets.main.map { it.kotlin.sourceDirectories }
+val JDK_DOCUMENTATION_LINK_VERSION: String by extra
+val jdkDocLinkVersion = JDK_DOCUMENTATION_LINK_VERSION.toIntOrNull()
+	?.takeIf { it in minimumSupportedJdkVersion..maximumSupportedJdkVersion }
+val baseDokkaConfiguration: DokkaTask.() -> Unit = {
+	impliedPlatforms = mutableListOf("JVM")
+	includes = listOf("Module.md")
+	apiVersion = KOTLIN_API_VERSION
+	languageVersion = KOTLIN_LANGUAGE_VERSION
+	jdkVersion = jdkDocLinkVersion ?: maximumSupportedJdkVersion
+
+	noJdkLink = when (jdkVersion) {
+		in 6..10 -> false
+		else     -> {
+			val jdkRootLink = URL("https://docs.oracle.com/en/java/javase/$jdkVersion/docs/api/")
+			externalDocumentationLink {
+				url = jdkRootLink
+				packageListUrl = URL(jdkRootLink, "elements-list")
+			}
+
+			true
+		}
+	}
+
+	val defaultSamplesLocation = "src/samples"
+	if (file(defaultSamplesLocation).listFiles()?.isNotEmpty() == true)
+		samples = listOf(defaultSamplesLocation)
+
+	linkMapping {
+		// Equivalent to `src/main/kotlin`
+		dir = "./"
+		url = "https://github.com/polyforest/acornui-gradle-plugin/blob/master"
+		suffix = "#L"
+	}
+}
+
+tasks.dokka(baseDokkaConfiguration)
+
+val dokkaJavaDoc by tasks.registering(DokkaTask::class) {
+	baseDokkaConfiguration(this)
+	group = documentationGroup
+	sourceDirs = javaSourceDirs.get() + kotlinSourceDirs.get()
+	outputDirectory = buildDir.resolve(JavaPlugin.JAVADOC_TASK_NAME).absolutePath
+}
+
+val javadoc by tasks.existing {
+	enabled = false
+	dependsOn(dokkaJavaDoc)
+}
+
+val documentationGroup = JavaBasePlugin.DOCUMENTATION_GROUP
+val dokkaJar by tasks.registering(Jar::class) {
+	group = documentationGroup
+	description = "Assembles Kotlin docs artifact with Dokka (produces default `-javadoc.jar`)."
+	archiveClassifier.set("javadoc")
+	from(tasks.dokka)
+}
+
+val dokkaJavaJar by tasks.registering(Jar::class) {
+	group = documentationGroup
+	description = "Assembles Kotlin as Java docs artifact with Dokka (produces alternative `-javadoc.jar`)"
+	from(dokkaJavaDoc)
+}
+
+val sourcesJar by tasks.registering(Jar::class) {
+	group = documentationGroup
+	description = "Assembles Kotlin sources artifact with Dokka (produces `-sources.jar`)."
+	archiveClassifier.set("sources")
+	from(kotlinSourceDirs)
 }
