@@ -48,6 +48,7 @@ class AUI constructor(val project: Project) {
 		"PRODUCT_GROUP" to "",
 		"PRODUCT_VERSION" to "1.0.0-SNAPSHOT",
 		// Library and application dependencies (and settings)
+		"KOTLIN_VERSION" to "1.3.21",
 		"KOTLIN_LANGUAGE_VERSION" to "1.3",
 		"KOTLIN_JVM_TARGET" to "1.8",
 		"ACORNUI_VERSION" to "1.0.0-SNAPSHOT",
