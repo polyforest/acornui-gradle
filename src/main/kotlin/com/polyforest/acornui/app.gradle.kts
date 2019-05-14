@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-// Enabling causes strange compiler error where it detects a nullable receiver instance that wasn't detectable statically
-// Also might cause the app plugin to publish at the top level of the repo instead of with a group
-// @file:Suppress("UNUSED_VARIABLE")
-
 package com.polyforest.acornui
 
 import com.polyforest.acornui.App_gradle.FileProcessor
