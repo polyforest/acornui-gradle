@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Poly Forest
+ * Copyright 2019 Poly Forest, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.polyforest.acornui
 
-import com.polyforest.acornui.build.*
+import com.polyforest.acornui.build.acornui
 
 /**
  * Plugin:  com.polyforest.acornui.builder
