@@ -38,12 +38,14 @@ version = PRODUCT_VERSION
 repositories {
 	jcenter()
 }
-kotlin {
-	this.sourceSets["main"].kotlin.sourceDirectories
-}
+
 val KOTLIN_VERSION: String by extra
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
+}
+
+kotlin {
+	this.sourceSets["main"].kotlin.sourceDirectories
 }
 
 publishing {
