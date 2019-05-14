@@ -25,15 +25,19 @@ import org.gradle.kotlin.dsl.withType
 import java.io.File
 
 /**
- * Gets existing or registers new 'clean' task using configuration avoidance api.
+ * Provides enriched description and default group for the [Project]'s `clean` task.
  *
- * Provides enriched description and default group.
- * @param action
+ * Optionally, perform configuration [action] immediately if provided.
+ *
+ * If the `clean` task doesn't exist, it is registered.
+ *
+ * @see register
+ * @param action configuration to be performed immediately, optional.
  */
 fun Project.maybeCreateCleanTask(action: (Delete.() -> Unit)? = null) {
 	run {
 		/**
-		 * By waiting till after the project is evaluated to find or register the clean task, this plugin is compatible
+		 * By waiting till after the project is evaluated to find or register the clean task, this is compatible
 		 * with almost all plugins whether applied before or after it.
 		 *
 		 * (could have complications with plugins that do things in afterEvaluate like this)
