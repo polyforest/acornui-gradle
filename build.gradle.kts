@@ -44,10 +44,6 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
 }
 
-kotlin {
-	this.sourceSets["main"].kotlin.sourceDirectories
-}
-
 publishing {
 	repositories {
 		maven(url = "build/repository")
@@ -171,11 +167,12 @@ val baseDokkaConfiguration: DokkaTask.() -> Unit = {
 
 tasks.dokka(baseDokkaConfiguration)
 
+val javadocTaskName = JavaPlugin.JAVADOC_TASK_NAME
 val dokkaJavaDoc by tasks.registering(DokkaTask::class) {
 	baseDokkaConfiguration(this)
 	group = documentationGroup
 	sourceDirs = javaSourceDirs.get() + kotlinSourceDirs.get()
-	outputDirectory = buildDir.resolve(JavaPlugin.JAVADOC_TASK_NAME).absolutePath
+	outputDirectory = buildDir.resolve(javadocTaskName).absolutePath
 }
 
 val javadoc by tasks.existing {
@@ -184,16 +181,26 @@ val javadoc by tasks.existing {
 }
 
 val documentationGroup = JavaBasePlugin.DOCUMENTATION_GROUP
+val javaJavadocPropName = "JAVA_JAVADOC"
 val dokkaJar by tasks.registering(Jar::class) {
 	group = documentationGroup
-	description = "Assembles Kotlin docs artifact with Dokka (produces default `-javadoc.jar`)."
-	archiveClassifier.set("javadoc")
+	description =
+		"Assembles Kotlin docs artifact with Dokka (produces default `-javadoc.jar`, `-dokka.jar` if " +
+				"$javaJavadocPropName Gradle property is present)"
+
+	val jarClassifier = if (project.extra.has(javaJavadocPropName)) javadocTaskName else "dokka"
+	archiveClassifier.set(jarClassifier)
 	from(tasks.dokka)
 }
 
 val dokkaJavaJar by tasks.registering(Jar::class) {
 	group = documentationGroup
-	description = "Assembles Kotlin as Java docs artifact with Dokka (produces alternative `-javadoc.jar`)"
+	description =
+		"Assembles Kotlin as Java docs artifact with Dokka (produces default `-java-javadoc.jar`, `-javadoc.jar` if " +
+				"$javaJavadocPropName Gradle property is present)"
+
+	val jarClassifier = if (project.extra.has(javaJavadocPropName)) "java-$javadocTaskName" else javadocTaskName
+	archiveClassifier.set(jarClassifier)
 	from(dokkaJavaDoc)
 }
 
