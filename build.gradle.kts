@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+
 /*
  * Copyright 2019 Poly Forest
  *
@@ -33,13 +36,29 @@ repositories {
 	jcenter()
 }
 
+val KOTLIN_VERSION: String by extra
 dependencies {
-	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21")
+	implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION")
 }
 
 publishing {
 	repositories {
 		maven(url = "build/repository")
+	}
+}
+
+val KOTLIN_LANGUAGE_VERSION: String by extra
+val kotlinApiVersionPropName = "KOTLIN_API_VERSION"
+if (!extra.has(kotlinApiVersionPropName)) extra[kotlinApiVersionPropName] = KOTLIN_LANGUAGE_VERSION
+val KOTLIN_API_VERSION: String by extra
+val KOTLIN_JVM_TARGET: String by extra
+val liveKotlinJvmCompileTasks = tasks.withType<KotlinCompile<KotlinJvmOptions>>()
+liveKotlinJvmCompileTasks.configureEach {
+	kotlinOptions {
+		languageVersion = KOTLIN_LANGUAGE_VERSION
+		apiVersion = KOTLIN_API_VERSION
+		jvmTarget = KOTLIN_JVM_TARGET
+		verbose = true
 	}
 }
 
