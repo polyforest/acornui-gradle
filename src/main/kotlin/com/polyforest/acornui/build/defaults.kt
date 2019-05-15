@@ -26,6 +26,8 @@ typealias GroupPackagePart = String
 typealias MainClassPackagePart = String
 typealias AppNamePackagePart = String
 
+internal const val NO_PROP_FOUND_MSG = "No Gradle property provided by the consuming project or plugin defaults."
+
 /**
  * Acorn UI constants and properties.
  *
@@ -67,8 +69,7 @@ class AUI constructor(val project: Project) {
 			(project.maybeExtra[key] as? String) ?: if (key == "JVM_MAIN") getJvmMain() else _defaults.getValue(key)
 		} catch (e: NoSuchElementException) {
 			val property = e.message?.substringAfter("Key ")?.substringBefore(" is missing")
-			val noPropFound = "No Gradle property provided by the consuming project or plugin defaults."
-			throw Throwable("$property >> $noPropFound", e)
+			throw Throwable("$property >> $NO_PROP_FOUND_MSG", e)
 		}
 	}
 

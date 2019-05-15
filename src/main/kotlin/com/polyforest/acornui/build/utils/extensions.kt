@@ -16,8 +16,10 @@
 
 package com.polyforest.acornui.build.utils
 
+import com.polyforest.acornui.build.NO_PROP_FOUND_MSG
 import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.plugins.ExtraPropertiesExtension
+import org.gradle.kotlin.dsl.extra
 
 internal val ExtensionAware.maybeExtra: ExtraPropertiesExtension
 	get() {
@@ -26,11 +28,20 @@ internal val ExtensionAware.maybeExtra: ExtraPropertiesExtension
 			override fun get(name: String): Any? {
 				return if (has(name)) {
 					if (extraProps.get(name) == null)
-						throw Exception("Use 'extra' to get nullable properties.  '${this@maybeExtra::maybeExtra.name}' returns the null value to indicate a missing value for easy elvis operator chaining and cannot accommodate properties with a null value.")
+						throw Exception(
+							"Use 'extra' to get nullable properties.  '${this@maybeExtra::maybeExtra.name}' returns " +
+									"the null value to indicate a missing value for easy elvis operator chaining and " +
+									"cannot accommodate properties with a null value."
+						)
 					extraProps[name]
-				}
-				else
+				} else
 					null
 			}
 		}
 	}
+
+internal fun ExtensionAware.extraOrDefault(name: String, default: String? = null) =
+	extra[name]?.toString()?.takeIf { it.isNotBlank() } ?: default ?: throw NoSuchElementException(NO_PROP_FOUND_MSG)
+
+internal fun ExtensionAware.maybeExtraOrDefault(name: String, default: String? = null) =
+	maybeExtra[name]?.toString()?.takeIf { it.isNotBlank() } ?: default
