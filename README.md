@@ -44,8 +44,10 @@ The documentation below uses nested bullet points to indicate which plugins dire
 #### Plugins Acorn UI Uses
 
 - **com.polyforest.acornui.root** - provides non-opinionated configuration for all subprojects/modules  
+\
 _(i.e. Making sure all modules/subprojects use the same Gradle version)_
 - **com.polyforest.acornui.basic** - provides slightly opinionated basic configuration and defaults for a single Kotlin MPP module  
+\
 _(i.e. Will create targets that Acorn UI supports and apply standard required dependencies)_
 
 #### Plugins Acorn UI App Projects Use
@@ -53,13 +55,15 @@ _(i.e. Will create targets that Acorn UI supports and apply standard required de
 - **com.polyforest.acornui.app-root** - provides app-oriented opinionated configuration
   - _applies_ **acornui.root**
 - **com.polyforest.acornui.app-basic** - provides app-oriented opionated configuration for run of the mill modules  
+\
 _(i.e. makes it so that all Acorn UI module dependencies use the same version as every other module)_
   - _applies_ **acornui.app**
 - **com.polyforest.acornui.app** - provides app-entrypoint-oriented configuration and pipeline for delivering supported targets  
+\
 _(i.e. an app entrypoint module; typically named `app` by convention.  Responsible for setting up JS code post-processing like minification)_
   - _applies_ **acornui.app-basic**
   - _applies_ **kotlin-dce-js**
 - **com.polyforest.acornui.builder** - provides configuration for a special module that allows access to some legacy build features*
   - _applies_ **acornui.app-basic**
-  
+
 \* will be deprecated in an upcoming iteration of Acorn UI Build Support
