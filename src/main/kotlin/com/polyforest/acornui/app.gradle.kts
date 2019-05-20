@@ -261,7 +261,7 @@ tasks {
 			"http",
 			null,
 			"localhost",
-			63340,
+			63342,
 			"/",
 			null,
 			null
