@@ -17,7 +17,6 @@
 package com.polyforest.acornui
 
 import com.polyforest.acornui.build.AUI
-import com.polyforest.acornui.build.maybeCreateCleanTask
 
 /**
  * Plugin:  com.polyforest.acornui.root
@@ -36,6 +35,8 @@ allprojects {
 
 // Delete the IDE default build directory upon `clean`
 // Also, for some reason a 'build' directory at the root project (with empty contents) gets created
-maybeCreateCleanTask {
+val clean by tasks.creating(Delete::class) {
+	group = "build"
+	description = "Deletes build output directories (\"out/\" and \"build/\")"
 	delete("out/", "build/")
 }

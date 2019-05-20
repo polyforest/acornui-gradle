@@ -17,7 +17,6 @@
 package com.polyforest.acornui
 
 import com.polyforest.acornui.build.AUI
-import com.polyforest.acornui.build.maybeCreateCleanTask
 
 /**
  * Plugin:  com.polyforest.acornui.basic
@@ -117,6 +116,3 @@ afterEvaluate {
 		jvmArgs("-ea")
 	}
 }
-
-// Enhance basic `clean` task description to list exactly what it cleans
-maybeCreateCleanTask()

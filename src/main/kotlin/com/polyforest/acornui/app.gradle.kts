@@ -124,8 +124,10 @@ val jsLibsRelDir = File("lib")
 val assetsRelDir = File("assets")
 // Destination root for js build variations hosted by the IDE's built-in web server
 val webFolderRoot = projectDir
-val webFolder = webFolderRoot.resolve("www")
-val webDistFolder = webFolderRoot.resolve("wwwDist")
+val webFolderStem = "www"
+val webFolder = webFolderRoot.resolve(webFolderStem)
+val webDistFolderStem = "wwwDist"
+val webDistFolder = webFolderRoot.resolve(webDistFolderStem)
 val ghDocsFolder = file("docs")
 val targetCompilations = { target: String -> kotlin.targets[target].compilations }
 typealias FileProcessor = (src: String, file: File) -> String
@@ -531,6 +533,8 @@ tasks {
 	}
 
 	val clean by existing(Delete::class) {
+		description = "Deletes build folder (\"build/\"), JS dev output (\"$webFolderStem/\"), " +
+				"& JS prod output (\"$webDistFolderStem\")."
 		delete(webFolder, webDistFolder)
 	}
 
