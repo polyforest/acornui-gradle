@@ -8,10 +8,10 @@ This project is a part of a series of projects around Acorn UI and ease of use c
 ### Gradle is the Only Way  
 _Gradles is the only way to build Kotlin multiplatform libraries that take advantage of language level features at this time._
 
-### Reduces Boilerplateofficial Gradle Kotlin plugin boilerplate
+### Reduces Boilerplate
 _Official Gradle plugins for Kotlin multiplatform projects and other standard plugins still require verbose boilerplate for most needs._
 
-### Non-existent out-of-the-box multi-module support  
+### Missing out-of-the-box multi-module support  
 _Building multiplatform, multi-module projects with common configuration in Gradle still requires a lot of instrumentation within Gradle and can be done in brittle ways even though it's a common paradigm to have multiple modules in a single project._
 
 ### Basic CI + Dev environment support  
