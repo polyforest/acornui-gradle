@@ -23,8 +23,6 @@ import com.polyforest.acornui.build.acornuiDependencyNotation
 import com.polyforest.acornui.build.document
 import com.polyforest.acornui.build.maybeAddBasicResourcesAsResourceDir
 import com.polyforest.acornui.build.validateAcornUiHomeToUseBasicAssets
-import gradle.kotlin.dsl.accessors._c36447fcf39b14501017ce8c9e28d6f5.kotlin
-import gradle.kotlin.dsl.accessors._c36447fcf39b14501017ce8c9e28d6f5.sourceSets
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.invoke
