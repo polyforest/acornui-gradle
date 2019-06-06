@@ -37,15 +37,21 @@ tasks {
 			doLast {
 				val ideMetadataDir = project.layout.projectDirectory.dir(".idea").asFile
 				require(ideMetadataDir.exists() && ideMetadataDir.isDirectory)
-
+				
+				// Convert library dependencies to module dependencies
 				// Targeted dependency conversions (map/data value contents:  <regex-string> to <replace-string>)
+				val module = "acornui-.*"
+				val platforms = "jvm|js"
+				val runtimeScope = "RUNTIME"
+				val testScope = "TEST"
+				val metadataSuffix = "metadata"
 				val dependencyConversionRules = mapOf(
-					"Common Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: (com.polyforest):(acornui-.*)-metadata:.*" level="project".*(/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.commonMain\" \$5"),
-					"Common Module Library (Test)" to ("""(<orderEntry type)="library" (scope="TEST") (name)="Gradle: (com.polyforest):(acornui.*)-metadata:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonTest\" \$2 \$6"),
-					"Common Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="RUNTIME") (name)="Gradle: (com.polyforest):(acornui.*)-metadata:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6"),
-					"JVM & JS Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: (com.polyforest):(acornui-.*)-(jvm|js):.*" level="project".*(/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.\$5Main\" \$6"),
-					"JVM & JS Module Library (Test)" to ("""(<orderEntry type)="library" (scope="TEST") (name)="Gradle: (com.polyforest):(acornui.*)-(jvm|js):.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.\$6Test\" \$2 \$7"),
-					"JVM & JS Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="RUNTIME") (name)="Gradle: (com.polyforest):(acornui.*)-metadata:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6")
+					"Common Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: ($group):($module)-$metadataSuffix:.*" level="project".*(/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.commonMain\" \$5"),
+					"Common Module Library (Test)" to ("""(<orderEntry type)="library" (scope="$testScope") (name)="Gradle: ($group):(acornui.*)-$metadataSuffix:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonTest\" \$2 \$6"),
+					"Common Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="$runtimeScope") (name)="Gradle: ($group):(acornui.*)-$metadataSuffix:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6"),
+					"JVM & JS Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: ($group):($module)-($platforms):.*" level="project".*(/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.\$5Main\" \$6"),
+					"JVM & JS Module Library (Test)" to ("""(<orderEntry type)="library" (scope="$testScope") (name)="Gradle: ($group):(acornui.*)-($platforms):.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.\$6Test\" \$2 \$7"),
+					"JVM & JS Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="$runtimeScope") (name)="Gradle: ($group):(acornui.*)-($platforms):.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6")
 				).map { ruleEntry ->
 					object {
 						val shortname = ruleEntry.key
