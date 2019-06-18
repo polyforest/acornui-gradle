@@ -27,8 +27,6 @@ plugins {
 	id("com.polyforest.acornui.root")
 }
 
-val acorn = AUI(project)
-
 tasks {
 	// Setup IDE composite support tasks if developer has opted in by setting the system property
 	if (System.getProperty("composite.intellij")?.toBoolean() == true) {
