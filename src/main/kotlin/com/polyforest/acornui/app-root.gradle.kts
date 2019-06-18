@@ -16,6 +16,10 @@
 
 package com.polyforest.acornui
 
+import com.polyforest.acornui.build.AUI
+import org.gradle.api.DefaultTask
+// import org.gradle.kotlin.dsl.provideDelegate
+import java.io.File
 import com.polyforest.acornui.build.document
 
 /**
@@ -35,47 +39,80 @@ tasks {
 			document("Converts included builds' IDE dependencies from libraries (.jar) to modules.", "composite")
 
 			doLast {
-				val ideMetadataDir = project.layout.projectDirectory.dir(".idea").asFile
-				require(ideMetadataDir.exists() && ideMetadataDir.isDirectory)
-				
-				// Convert library dependencies to module dependencies
-				// Targeted dependency conversions (map/data value contents:  <regex-string> to <replace-string>)
-				val module = "acornui-.*"
+				val ideSettingsDir = project.layout.projectDirectory.dir(".idea").asFile
+				require(ideSettingsDir.exists() && ideSettingsDir.isDirectory)
+
+				// Setup dependency conversion rules
+				val moduleGroup ="com.polyforest"
+				val sharedModuleBase = "acornui"
+				val modulePrefix = "$sharedModuleBase-"
+				val modules = "$modulePrefix[^-]+"
 				val platforms = "jvm|js"
 				val runtimeScope = "RUNTIME"
 				val testScope = "TEST"
 				val metadataSuffix = "metadata"
+				// Rules (map/data value contents:  <regex-string> to <replace-string>)
 				val dependencyConversionRules = mapOf(
-					"Common Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: ($group):($module)-$metadataSuffix:.*" level="project".*(/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.commonMain\" \$5"),
-					"Common Module Library (Test)" to ("""(<orderEntry type)="library" (scope="$testScope") (name)="Gradle: ($group):(acornui.*)-$metadataSuffix:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonTest\" \$2 \$6"),
-					"Common Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="$runtimeScope") (name)="Gradle: ($group):(acornui.*)-$metadataSuffix:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6"),
-					"JVM & JS Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: ($group):($module)-($platforms):.*" level="project".*(/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.\$5Main\" \$6"),
-					"JVM & JS Module Library (Test)" to ("""(<orderEntry type)="library" (scope="$testScope") (name)="Gradle: ($group):(acornui.*)-($platforms):.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.\$6Test\" \$2 \$7"),
-					"JVM & JS Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="$runtimeScope") (name)="Gradle: ($group):(acornui.*)-($platforms):.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6")
-				).map { ruleEntry ->
-					object {
-						val shortname = ruleEntry.key
-						val name = "'${shortname}' Dependency"
-						val longname = "$name + => Reciprocal IDE Module Dependency"
-						val pattern = Regex(ruleEntry.value.first)
-						val replacement = ruleEntry.value.second
+					"Common Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: ($moduleGroup):($modules)-$metadataSuffix:.*" level="project".*(/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.commonMain\" \$5"),
+					"Common Module Library (Test)" to ("""(<orderEntry type)="library" (scope="$testScope") (name)="Gradle: ($moduleGroup):($modules)-$metadataSuffix:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonTest\" \$2 \$6"),
+					"Common Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="$runtimeScope") (name)="Gradle: ($moduleGroup):($modules)-$metadataSuffix:.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6"),
+					"JVM & JS Module Library" to ("""(<orderEntry type)="library" (name)="Gradle: ($moduleGroup):($modules)-($platforms):[0-9\.]+" level="project" (/>)""" to "\$1=\"module\" module-\$2=\"\$3.\$4.\$5Main\" \$6"),
+					"JVM & JS Module Library (Test)" to ("""(<orderEntry type)="library" (scope="$testScope") (name)="Gradle: ($moduleGroup):($modules)-($platforms):.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.\$6Test\" \$2 \$7"),
+					"JVM & JS Module Library (Runtime)" to ("""(<orderEntry type)="library" (scope="$runtimeScope") (name)="Gradle: ($moduleGroup):($modules)-($platforms):.*".*(/>)""" to "\$1=\"module\" module-\$3=\"\$4.\$5.commonMain\" \$2 \$6")
+				).mapKeys { it.key + " dependency conversion" }.map { Rule(it) }
 
-						private val noMatchDefault = "no match"
-						fun formatMatchResult(result: String = noMatchDefault): String {
-							return "\t$shortname [${if (!result.isBlank())
-								result.toUpperCase()
-							else
-								noMatchDefault}]"
-						}
-					}
-				}
 
-				logger.quiet(
-					"Converting ${project.name}'s IDE library dependencies (via a composite build setup) to IDE " +
-							"module dependencies."
-				)
+				val slash = (File.separator).let { if (it == "\\") it.repeat(2) else it }
+				val pathSeparator = File.pathSeparator
+				val groupPathPart =
+					moduleGroup.toString().takeIf { it.isNotBlank() }?.let { "$slash${it.replace(".", slash)}" } ?: ""
 
-				val imlFiles = ideMetadataDir.walkTopDown().filter { child: File ->
+				/**
+				 * Get a regex pattern module name string for any modules that use [moduleNameBase]
+				 *
+				 * Supports the following module name styles given a [moduleNameBase] `lib`
+				 * - `lib`
+				 * - `lib-module` & `lib-module-name`
+				 * - `lib-metadata`, `lib-module-metadata`, & `lib-module-name-metadata`
+				 * - _(same as above with passed [platforms])_
+				 *
+				 * It is not recommended to use this outside of a classpath context with IDE config files.
+				 * @param moduleNameBase to match (e.g. `lib`)
+				 * @param platforms to match (e.g. `jvm|js`)
+				 **/
+				fun classpathModuleName(moduleNameBase: String, platforms: String) =
+					"""$moduleNameBase(?:-[^-${File.pathSeparator}$slash]+)*?(?:-(?:$metadataSuffix|$platforms))?"""
+
+				val gradleCache = """\.gradle${slash}caches"""
+				val localMaven = """\.m2${slash}repository"""
+				fun artifactFilenamePattern(moduleNameBase: String, platforms: String) =
+					"""${classpathModuleName(moduleNameBase, platforms)}-[\d\.]+\.jar"""
+
+				fun artifactPath(moduleNameBase: String, platforms: String) =
+					"""$pathSeparator?[^$pathSeparator]+(?=(?:$gradleCache|$localMaven)[^$pathSeparator]+?$slash${artifactFilenamePattern(
+						moduleNameBase,
+						platforms
+					)})[^$pathSeparator]+"""
+
+				/**
+				 * Get a display friendly description of the classpath cleaning rule.
+				 *
+				 * @param moduleGroup takes the form of "com.example"
+				 * @param moduleNamePrefix takes the form of "something-" where the full module name is
+				 * "something-core", "something-core-utils", or "something"
+				 */
+				fun getCleanClasspathRuleName(moduleGroup: Any, moduleNamePrefix: String) =
+					"Clean classpath - $moduleGroup:$moduleNamePrefix.* $metadataSuffix|$platforms jars"
+
+				// Rules (map/data value contents:  <regex-string> to <replace-string>)
+				val classpathCleanupRules = mapOf(
+					getCleanClasspathRuleName(moduleGroup, modulePrefix) to (artifactPath(
+						sharedModuleBase,
+						"jvm"
+					) to "")
+				).map { Rule(it) }
+
+				val imlFiles = ideSettingsDir.walkTopDown().filter { child: File ->
 					child.exists() && child.isFile && child.extension == "iml"
 				}
 
@@ -86,12 +123,27 @@ tasks {
 						logger.lifecycle("${file.name}...")
 						var newFileContents = fileContents
 
-						dependencyConversionRules.forEach { rule ->
-							if (rule.pattern.containsMatchIn(newFileContents)) {
-								logger.lifecycle(rule.formatMatchResult("converted"))
-								newFileContents = rule.pattern.replace(newFileContents, rule.replacement)
-							} else
-								logger.lifecycle(rule.formatMatchResult())
+						logger.quiet(
+							"Converting ${project.name}'s IDE library dependencies (via a composite build setup) " +
+									"to IDE module dependencies."
+						)
+						dependencyConversionRules.forEach {
+							it.process(newFileContents)?.let { newFileContents = it }
+						}
+
+						logger.quiet("Cleaning up library jars from classpath...")
+						// Extract classpath for more efficient and easier to maintain regex
+						val classpathValueRegex = Regex("""(?<=<option name="classpath" value=")[^"]+""")
+						val classpath = classpathValueRegex.find(newFileContents)?.value
+						val newClasspath = classpath?.let {
+							var tempNewCP = it
+							classpathCleanupRules.forEach { rule ->
+								tempNewCP = rule.process(tempNewCP) ?: tempNewCP
+							}
+							tempNewCP
+						}
+						newClasspath?.let {
+							newFileContents = newFileContents.replace(classpathValueRegex, it.replace("$", "\\$"))
 						}
 
 						file.writeText(newFileContents)
@@ -187,5 +239,30 @@ tasks {
 		// Setup compositeConfiguredStatus to show by default when the IDE imports or syncs the project
 		val wrapper by existing
 		wrapper.orNull?.dependsOn(compositeConfiguredStatus)
+	}
+}
+
+open class Rule(ruleEntry: Map.Entry<String, Pair<String, String>>) {
+	private val shortname = ruleEntry.key
+	private val pattern = Regex(ruleEntry.value.first)
+	private val replacement = ruleEntry.value.second
+
+	private fun renderMatchResult(result: String = "") = "\t$shortname [${result.toUpperCase()}]"
+
+	fun process(contents: String?): String? {
+		return contents?.let {
+			if (pattern.containsMatchIn(it)) {
+				logger.lifecycle(renderMatchResult(POSITIVE_RESULT_KEYPHRASE))
+				pattern.replace(it, replacement)
+			} else {
+				logger.lifecycle(renderMatchResult(NO_MATCH_RESULT_KEYPHRASE))
+				null
+			}
+		}
+	}
+
+	companion object {
+		const val POSITIVE_RESULT_KEYPHRASE = "processed"
+		const val NO_MATCH_RESULT_KEYPHRASE = "no match"
 	}
 }
