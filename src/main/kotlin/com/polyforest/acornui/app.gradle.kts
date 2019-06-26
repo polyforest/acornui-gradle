@@ -621,7 +621,7 @@ tasks {
 		includeEmptyDirs = false
 	}
 
-	fun <S : Task, T : Task> T.onlyIfJvmOutputChanged() {
+	fun <T : Task> T.onlyIfJvmOutputChanged() {
 		onlyIf {
 			assembleJvmOutput.get().didWork
 		}
