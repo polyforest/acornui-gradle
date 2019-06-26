@@ -676,6 +676,7 @@ tasks {
 		)
 		workingDir = getJvmOutputStagingDir().absoluteFile
 		jvmArgs = listOf("-ea", "-Ddebug=true").let { defaultArgs: List<String> ->
+			@Suppress("INACCESSIBLE_TYPE")
 			if (OperatingSystem.current() == OperatingSystem.MAC_OS)
 				defaultArgs + "-XstartOnFirstThread"
 			else
