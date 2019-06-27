@@ -30,9 +30,9 @@ import org.gradle.api.Project
  */
 class KotlinMPBasicPlugin: Plugin<Project> {
 	/**
-	 * Apply this plugin to the given [target] object.
+	 * Apply this plugin to the given [project].
 	 */
-	override fun apply(target: Project) {
+	override fun apply(project: Project) {
 		TODO("not implemented")
 	}
 }

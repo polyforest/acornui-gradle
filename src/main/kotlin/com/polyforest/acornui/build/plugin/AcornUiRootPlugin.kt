@@ -20,15 +20,13 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Provides entry point configuration for a multi-platform (JS & JVM) Kotlin module in a multi-module project.
+ * Provides a standard, opinionated configuration for the root build script in an Acorn UI app project.
  *
- * JS compilation main defaults to "call"
- *
- * Plugin:	 Kotlin Multi-Module Multi-Platform Main Plugin
- * ID:		 com.polyforest.kotlin.mm-mp-main
- * Applies:	 [KotlinMPBasicPlugin]
+ * Plugin:   Acorn UI Root Plugin
+ * ID:       com.polyforest.acornui.root
+ * Applies:  [MMRootPlugin]
  */
-class KotlinMMMPMainPlugin : Plugin<Project> {
+class AcornUiRootPlugin : Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [project].
 	 */

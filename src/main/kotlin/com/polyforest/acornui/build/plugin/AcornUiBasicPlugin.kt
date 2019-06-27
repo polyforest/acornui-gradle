@@ -18,6 +18,13 @@ package com.polyforest.acornui.build.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.create
+
+internal val Project.acornExtension
+	get(): AcornUiPluginExtension? =
+		project.extensions.findByName(ACORNUI_EXTENSION_NAME) as? AcornUiPluginExtension
+
+private const val ACORNUI_EXTENSION_NAME: String = "acorn"
 
 /**
  * Provides a starter configuration for a basic (non-app) module that relies on Acorn UI.
@@ -29,11 +36,12 @@ import org.gradle.api.Project
  * ID:       com.polyforest.acornui.basic
  * Applies:	 [KotlinMPBasicPlugin]
  */
-class AcornUIBasicPlugin : Plugin<Project> {
+class AcornUiBasicPlugin : Plugin<Project> {
 	/**
-	 * Apply this plugin to the given [target] object.
+	 * Apply this plugin to the given [project] object.
 	 */
-	override fun apply(target: Project) {
+	override fun apply(project: Project) {
 		TODO("not implemented")
+		val extension = project.extensions.create<AcornUiPluginExtension>(ACORNUI_EXTENSION_NAME)
 	}
 }

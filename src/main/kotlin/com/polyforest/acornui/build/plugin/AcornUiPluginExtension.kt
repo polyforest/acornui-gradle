@@ -16,21 +16,5 @@
 
 package com.polyforest.acornui.build.plugin
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-
-/**
- * Provides a standard, opinionated configuration for the root build script in an Acorn UI app project.
- *
- * Plugin:   Acorn UI Root Plugin
- * ID:       com.polyforest.acornui.root
- * Applies:  [MMRootPlugin]
- */
-class AcornUIRootPlugin : Plugin<Project> {
-	/**
-	 * Apply this plugin to the given [target] object.
-	 */
-	override fun apply(target: Project) {
-		TODO("not implemented")
-	}
+class AcornUiPluginExtension {
 }
