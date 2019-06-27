@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+@file:Suppress("LocalVariableName")
+
 package com.polyforest.acornui.build
 
 import com.polyforest.acornui.build.util.maybeExtra
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.extra
 import java.io.File
 
 typealias PropertyName = String
@@ -109,13 +110,13 @@ class AUI constructor(val project: Project) {
 				if (singleSource.isDirectory)
 					listOf(singleSource)
 				else
-					srcDir.listFiles().map { it.resolve("kotlin") }
+					srcDir.listFiles()?.map { it.resolve("kotlin") }
 			val pathSeparator = File.pathSeparator
 			val packagePath = path
 				.replace(".", pathSeparator)
 				.removeSuffix("Kt").plus(".kt")
 
-			return sourceRoots.firstOrNull {
+			return sourceRoots?.firstOrNull {
 				if (it.isDirectory) it.resolve(packagePath).isFile else false
 			}?.let { path }
 		}
@@ -138,19 +139,6 @@ class AUI constructor(val project: Project) {
 	}
 
 	companion object {
-		/**
-		 * Single parameter "constructor" singleton instance.
-		 */
-		private var instance: AUI? = null
-
-		/**
-		 * A single parameter "constructor" singleton for [AUI].
-		 *
-		 * @see [AUI] for more details.
-		 */
-		operator fun invoke(): AUI {
-			return instance ?: AUI().also { instance = it }
-		}
 
 		/**
 		 * Property name for the local Acorn UI repository directory.
@@ -162,15 +150,5 @@ class AUI constructor(val project: Project) {
 		 */
 		const val AP_TGROUP_PREFIX = ".ap."
 
-		private const val ACORNUI_PROPERTIES_EXT_NAME = "acorn"
-
-		private fun exposeOnRootProjectExtraProperties(project: Project) {
-			val rootProject = project.rootProject
-			ACORNUI_PROPERTIES_EXT_NAME.let {
-				rootProject.maybeExtra[it] ?: project.maybeExtra[it] ?: rootProject.extra.set(it, instance)
-			}
-		}
 	}
 }
-
-fun Project.getJvmMain(path: String? = null): String = AUI().getJvmMain()
