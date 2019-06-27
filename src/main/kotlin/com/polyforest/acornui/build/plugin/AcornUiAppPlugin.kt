@@ -16,5 +16,27 @@
 
 package com.polyforest.acornui.build.plugin
 
-class AcornUIPluginExtension {
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+
+/**
+ * Provides a starter configuration for an Acorn UI app module.
+ *
+ * Multi-platform (JS & JVM) & multi-module.
+ *
+ * Plugin:	 Acorn UI App Plugin
+ * ID:		 com.polyforest.acornui.app
+ * Applies:	 [AcornUiBasicPlugin]
+ */
+class AcornUiAppPlugin : Plugin<Project> {
+	/**
+	 * Apply this plugin to the given [project].
+	 */
+	override fun apply(project: Project) {
+		TODO("not implemented")
+		val acornExtension = project.acornExtension ?: run {
+			project.pluginManager.apply(AcornUiBasicPlugin::class.java)
+			project.acornExtension as AcornUiPluginExtension
+		}
+	}
 }
