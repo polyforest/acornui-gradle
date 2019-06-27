@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.polyforest.acornui.build.utils
+package com.polyforest.acornui.build.util
 
 import com.polyforest.acornui.build.NO_PROP_FOUND_MSG
 import org.gradle.api.plugins.ExtensionAware

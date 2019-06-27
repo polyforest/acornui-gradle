@@ -12,6 +12,6 @@ Contains sub-plugins entry points (pre-compiled plugins and their script sources
 
 Contains general support code for sub-plugins.
 
-# Package com.polyforest.acornui.build.utils
+# Package com.polyforest.acornui.build.util
 
 General purpose extensions for Gradle and std libs.

@@ -16,15 +16,20 @@
 
 package com.polyforest.acornui.build
 
-import org.gradle.api.Task
-import org.gradle.api.UnknownTaskException
-import org.gradle.api.tasks.TaskCollection
-import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
 
-fun <T : Task> TaskCollection<T>.tryNamed(name: String): TaskProvider<T>? {
-	return try {
-		named(name)
-	} catch (e: UnknownTaskException) {
-		null
+class BuildTool(val project: Project, configurationName: String, val main: String, dependencies: List<String>? = null) {
+
+	val configuration = project.configurations.maybeCreate(configurationName)
+
+	init {
+		dependencies?.let { toolDependencies ->
+			project.dependencies {
+				toolDependencies.forEach {
+					configuration(it)
+				}
+			}
+		}
 	}
 }
