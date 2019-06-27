@@ -16,7 +16,7 @@
 
 package com.polyforest.acornui.build
 
-import com.polyforest.acornui.build.utils.maybeExtra
+import com.polyforest.acornui.build.util.maybeExtra
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.extra
 import java.io.File
