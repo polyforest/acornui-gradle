@@ -153,7 +153,7 @@ tasks {
 
 		val entryPoint = path?.let { webRoot.resolve(it) } ?: webRoot.resolve("index.html")
 
-		val relativeURI = URI(
+		val relativeUri = URI(
 				null,
 				null,
 				entryPoint.relativeTo(project.rootDir).path,
@@ -161,11 +161,8 @@ tasks {
 				null
 		)
 
-		return getIntellijBuiltInServerUri(project).resolve(relativeURI)
+		return getIntellijBuiltInServerUri(project).resolve(relativeUri)
 	}
-
-	val devURI by lazy { getLocalAppServerUri(project = project, type = "dev") }
-	val prodURI by lazy { getLocalAppServerUri(project = project, type = "prod") }
 
 	val auiBuildTasksTool by lazy {
 		BuildTool(
