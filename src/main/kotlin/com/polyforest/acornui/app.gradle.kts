@@ -20,11 +20,7 @@ import com.polyforest.acornui.build.*
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.invoke
-import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJsDce
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
-import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import java.awt.Desktop
 import java.net.URI
 
@@ -108,9 +104,9 @@ fun Project.getAllOutDir(target: String, subdirectory: File? = null): Provider<D
 
 val aggregatedUnprocessedRelDir = File("unprocessed")
 val allOutUnprocessedJsDir =
-	getAllOutDir(AppTargetFacade.DEFAULT_JS_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
+		getAllOutDir(AppTargetFacade.DEFAULT_JS_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
 val allOutUnprocessedJvmDir =
-	getAllOutDir(AppTargetFacade.DEFAULT_JVM_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
+		getAllOutDir(AppTargetFacade.DEFAULT_JVM_TARGET_APP_TARGET_NAME, aggregatedUnprocessedRelDir)
 val jsLibsRelDir = File("lib")
 val assetsRelDir = File("assets")
 // Destination root for js build variations hosted by the IDE's built-in web server
@@ -135,34 +131,34 @@ tasks {
 	} ?: ""
 
 	fun getIntellijBuiltInServerUri(project: Project) =
-		URI(
-			"http",
-			null,
-			"localhost",
-			63342,
-			"/",
-			null,
-			null
-		).resolve("${project.rootDir.name}/")
+			URI(
+					"http",
+					null,
+					"localhost",
+					63342,
+					"/",
+					null,
+					null
+			).resolve("${project.rootDir.name}/")
 
 	fun getLocalAppServerUri(project: Project, type: String, path: File? = null, query: String? = null): URI {
 		val webRoot = if (type == "dev") webFolder else webDistFolder
 		val defaultQuery = "debug=true"
 		val fullQuery =
-			when {
-				query != null && type == "dev" -> "$query&$defaultQuery"
-				query == null && type == "dev" -> defaultQuery
-				else                           -> query
-			}
+				when {
+					query != null && type == "dev" -> "$query&$defaultQuery"
+					query == null && type == "dev" -> defaultQuery
+					else -> query
+				}
 
 		val entryPoint = path?.let { webRoot.resolve(it) } ?: webRoot.resolve("index.html")
 
 		val relativeURI = URI(
-			null,
-			null,
-			entryPoint.relativeTo(project.rootDir).path,
-			fullQuery,
-			null
+				null,
+				null,
+				entryPoint.relativeTo(project.rootDir).path,
+				fullQuery,
+				null
 		)
 
 		return getIntellijBuiltInServerUri(project).resolve(relativeURI)
@@ -173,19 +169,19 @@ tasks {
 
 	val auiBuildTasksTool by lazy {
 		BuildTool(
-			project,
-			"auiBuildTasksTool",
-			"com.acornui.build.gradle.BuildUtilKt",
-			listOf(acornuiDependencyNotation("build-tasks-jvm"))
+				project,
+				"auiBuildTasksTool",
+				"com.acornui.build.gradle.BuildUtilKt",
+				listOf(acornuiDependencyNotation("build-tasks-jvm"))
 		)
 	}
 
 
 	// Task Configuration Helpers
 	fun Copy.configureCommonStageTargetOutputForProcessingTask(
-		target: String,
-		type: String,
-		destRelSubDirectory: File = File(type)
+			target: String,
+			type: String,
+			destRelSubDirectory: File = File(type)
 	) {
 		document("Stage commonly processed $target output for $type specific processing")
 		into(getAllOutDir(target, destRelSubDirectory))
@@ -199,8 +195,8 @@ tasks {
 		outputs.dir(sourceDir).withPropertyName("outputFiles")
 
 		args = listOf(
-			"-target=assets",
-			"-src=${sourceDir.canonicalPath}"
+				"-target=assets",
+				"-src=${sourceDir.canonicalPath}"
 		)
 		main = auiBuildTasksTool.main
 		classpath = auiBuildTasksTool.configuration
@@ -218,9 +214,9 @@ tasks {
 		outputs.file("$srcDir/files.json")
 
 		args = listOf(
-			"-target=asset-manifest",
-			"-src=${srcDir.canonicalPath}",
-			"-root=${resourcesRootDir.canonicalPath}"
+				"-target=asset-manifest",
+				"-src=${srcDir.canonicalPath}",
+				"-root=${resourcesRootDir.canonicalPath}"
 		)
 		this.main = auiBuildTasksTool.main
 		classpath = auiBuildTasksTool.configuration
@@ -242,10 +238,10 @@ tasks {
 		outputs.dir(destinationRoot).withPropertyName("outputFiles")
 
 		args = listOf(
-			"-target=lib-manifest",
-			"-src=${srcRoot.canonicalPath}",
-			"-dest=${dest.canonicalPath}",
-			"-root=${destinationRoot.canonicalPath}"
+				"-target=lib-manifest",
+				"-src=${srcRoot.canonicalPath}",
+				"-dest=${dest.canonicalPath}",
+				"-root=${destinationRoot.canonicalPath}"
 		)
 		main = auiBuildTasksTool.main
 		classpath = auiBuildTasksTool.configuration
@@ -263,8 +259,8 @@ tasks {
 		doLast {
 			val manipulator = SourceFileManipulator()
 			manipulator.addProcessor(
-				ScriptCacheBuster::replaceVersionWithModTime,
-				*ScriptCacheBuster.extensions.toTypedArray()
+					ScriptCacheBuster::replaceVersionWithModTime,
+					*ScriptCacheBuster.extensions.toTypedArray()
 			)
 			source.forEach { manipulator.process(it) }
 		}
@@ -277,8 +273,8 @@ tasks {
 	 */
 	fun Copy.configureCommonPopulateWebDirectoryTask(type: String) {
 		document(
-			"Locally deploy js runtime files ($type) to IDE's built-in web server $type root",
-			"build"
+				"Locally deploy js runtime files ($type) to IDE's built-in web server $type root",
+				"build"
 		)
 	}
 
@@ -291,7 +287,7 @@ tasks {
 				desktop.browse(uri)
 			} else {
 				logger.warn(
-					"""
+						"""
 					Cannot open browser to: ${uri.toASCIIString()}
 					The build environment OS does not support the Java Desktop API.
 				""".trimIndent()
@@ -317,7 +313,7 @@ tasks {
 		validateAcornUiHomeToUseBasicAssets()
 
 		val targetName = AppTargetFacade.DEFAULT_JS_TARGET_APP_TARGET_NAME
-		val target = AppTargetFacade(project, targetName)
+		val target = AppTargetFacade(project, kotlin, targetName)
 
 		from(target.mpXResources)
 		into(allOutUnprocessedJsDir)
@@ -493,8 +489,7 @@ tasks {
 		document("Gather jvm resources cross module.")
 		validateAcornUiHomeToUseBasicAssets()
 
-		val targetName = AppTargetFacade.DEFAULT_JVM_TARGET_APP_TARGET_NAME
-		val target = AppTargetFacade(project, targetName)
+		val target = AppTargetFacade(project, kotlin, AppTargetFacade.DEFAULT_JVM_TARGET_APP_TARGET_NAME)
 
 		from(target.mpXResources)
 		into(allOutUnprocessedJvmDir)
@@ -531,9 +526,9 @@ tasks {
 
 	val populateJvmResources by registering {
 		document(
-			"Gather and process jvm resources to application working directory.  Does not do any work " +
-					"itself and simply calls the necessary tasks.",
-			"build"
+				"Gather and process jvm resources to application working directory.  Does not do any work " +
+						"itself and simply calls the necessary tasks.",
+				"build"
 		)
 		dependsOn(writeJvmResourceManifestFile)
 	}
@@ -551,8 +546,8 @@ tasks {
 		val JVM_MAIN by acorn.defaults
 		main = JVM_MAIN
 		classpath(
-			kotlin.targets["jvm"].compilations["main"].output.allOutputs.files,
-			configurations[jvmRuntimeCpConfigName]
+				kotlin.targets["jvm"].compilations["main"].output.allOutputs.files,
+				configurations[jvmRuntimeCpConfigName]
 		)
 		workingDir = getJvmOutputStagingDir().absoluteFile
 		jvmArgs = listOf("-ea", "-Ddebug=true").let { defaultArgs: List<String> ->
@@ -564,116 +559,4 @@ tasks {
 	}
 }
 
-class AppTargetFacade(
-	val project: Project,
-	name: String,
-	/**
-	 * Archival extensions (without the . prefix) used to recognize archives.
-	 */
-	val archiveExtensions: List<String> = listOf("war", "jar", "zip")
-) {
-	private val target = project.kotlin.targets.named(name)
-	private val allProjects
-		get() = try {
-			rootProject.subprojects - project(":$AP_BUILD_MODULE_NAME")
-		} catch (e: Exception) {
-			rootProject.subprojects
-		}
-	private val mainCompilation
-		get() = target.map {
-			it.compilations.named<KotlinCompilationToRunnableFiles<KotlinCommonOptions>>(DEFAULT_MAIN_COMPILATION_NAME)
-				.get()
-		}
-
-	/**
-	 * All sources for a given multi-platform target's module
-	 *
-	 * e.g.
-	 * given:
-	 * a target named "js" created via preset,
-	 * composed of multi-platform sources commonSourceSetA and jsSourceSetA...
-	 *
-	 * when:
-	 * jsSourceSetA declares a dependency on jsSourceSetB,
-	 * where all source sets are defined in the same multi-platform module...
-	 *
-	 * then:
-	 * [mpSources] = commonSourceSetA + jsSourceSetA + jsSourceSetB
-	 */
-	val mpSources = mainCompilation.map { it.output.classesDirs }
-
-	/**
-	 * All resources for a given multi-platform target's module
-	 *
-	 * Same as [mpSources], but for resources
-	 * @see [mpSources]
-	 */
-	val mpResources = mainCompilation.map {
-		it.allKotlinSourceSets.fold(project.files()) { fc: FileCollection, sourceSet: KotlinSourceSet ->
-			fc + sourceSet.resources.sourceDirectories
-		}
-	}
-
-	/**
-	 * All source files found in the target's internal/external modules dependencies
-	 * Excludes archival and source metadata if applicable.
-	 *
-	 * NOTE: Given this method relies on exploded archives that make up the runtime classpath, it's not guaranteed
-	 * that the returned file collection provider only has source files.
-	 *
-	 */
-	private val mpXDependencySources = mainCompilation.map {
-		extractArchives(it.runtimeDependencyFiles).matching {
-			exclude("META-INF/")
-		}
-	}
-
-	private fun extractArchives(files: FileCollection): FileTree {
-		val emptyFileTree = project.files().asFileTree
-
-		return filterToArchives(files).fold(emptyFileTree) { fileTreeAccumulator: FileTree, archive: File ->
-			fileTreeAccumulator + zipTree(archive)
-		}
-	}
-
-	private fun filterToArchives(files: FileCollection) =
-		files.filter { file -> file.extension in archiveExtensions }
-
-	/**
-	 * All sources for a given multi-platform target's module and its cross module multi-platform dependencies
-	 * Includes internal, external, and transitive dependency sources.
-	 *
-	 * Same as [mpSources], but also cross-module
-	 * @see [mpSources]
-	 */
-	val mpXSources =
-		project.provider(Callable {
-			mpXDependencySources.get() + mpSources.get()
-		})
-
-	/**
-	 * All resources for a given multi-platform target's module and its cross module multi-platform dependencies
-	 * Includes all resources for all modules in the root Gradle project sans unrelated modules (e.g. build module)
-	 *
-	 * Same as [mpResources], but also cross all modules in the Gradle build
-	 * @see [mpResources]
-	 */
-	val mpXResources = allProjects.fold(project.files()) { fc: FileCollection, p: Project ->
-		// TODO: Make this leverage dependencies so it is more accurate and less brittle
-		val mainCompilation =
-			p.kotlin.targets[target.name].compilations[DEFAULT_MAIN_COMPILATION_NAME]
-
-		fc + mainCompilation.allKotlinSourceSets.fold(fc) { innerFC: FileCollection, sourceSet: KotlinSourceSet ->
-			innerFC + sourceSet.resources.sourceDirectories
-		}
-	}
-
-	companion object {
-		private const val AP_BUILD_MODULE_NAME = "builder"
-		private const val APPLICATION_GROUP = ApplicationPlugin.APPLICATION_GROUP
-		const val DEFAULT_JS_TARGET_APP_TARGET_NAME = "js"
-		const val DEFAULT_JVM_TARGET_APP_TARGET_NAME = "jvm"
-		private const val DEFAULT_MAIN_COMPILATION_NAME = KotlinCompilation.MAIN_COMPILATION_NAME
-	}
-}
 
