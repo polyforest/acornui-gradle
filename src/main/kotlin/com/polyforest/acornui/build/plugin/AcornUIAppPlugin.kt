@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package com.polyforest.acornui.build.plugins
+package com.polyforest.acornui.build.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Provides a starter configuration for a basic (non-app) module that relies on Acorn UI.
+ * Provides a starter configuration for an Acorn UI app module.
  *
- * Aimed at modules that depend on Acorn UI modules.  Modules within an Acorn UI project that do not depend on Acorn UI
- * do not require this plugin.
+ * Multi-platform (JS & JVM) & multi-module.
  *
- * Plugin:   Acorn UI Basic Plugin
- * ID:       com.polyforest.acornui.basic
- * Applies:	 [KotlinMPBasicPlugin]
+ * Plugin:	 Acorn UI App Plugin
+ * ID:		 com.polyforest.acornui.app
+ * Applies:	 [KotlinMMMPMainPlugin]
  */
-class AcornUIBasicPlugin : Plugin<Project> {
+class AcornUIAppPlugin : Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [target] object.
 	 */

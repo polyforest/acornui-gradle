@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
-package com.polyforest.acornui.build.plugins
+package com.polyforest.acornui.build.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Provides a standard, opinionated configuration for the root build script in an Acorn UI app project.
+ * Provides a basic configuration for a multi-platform (JS & JVM) Kotlin module.
  *
- * Plugin:   Acorn UI Root Plugin
- * ID:       com.polyforest.acornui.root
- * Applies:  [MMRootPlugin]
+ * JS compilation main defaults to "noCall"
+ *
+ * Plugin:   Kotlin Multi-Platform Basic Plugin
+ * ID:  	 com.polyforest.kotlin.mp-basic
+ * Applies:	 None
  */
-class AcornUIRootPlugin : Plugin<Project> {
+class KotlinMPBasicPlugin: Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [target] object.
 	 */

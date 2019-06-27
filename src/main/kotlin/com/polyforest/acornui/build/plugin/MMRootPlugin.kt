@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.polyforest.acornui.build.plugins
+package com.polyforest.acornui.build.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Provides a basic configuration for a multi-platform (JS & JVM) Kotlin module.
+ * Provides a standard, opinionated configuration for the root build script in a multi-module project.
  *
- * JS compilation main defaults to "noCall"
- *
- * Plugin:   Kotlin Multi-Platform Basic Plugin
- * ID:  	 com.polyforest.kotlin.mp-basic
+ * Plugin:	 Multi-Module Root Plugin
+ * ID:		 com.polyforest.root
  * Applies:	 None
  */
-class KotlinMPBasicPlugin: Plugin<Project> {
+class MMRootPlugin : Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [target] object.
 	 */

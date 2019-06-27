@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.polyforest.acornui.build.plugins
+package com.polyforest.acornui.build.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

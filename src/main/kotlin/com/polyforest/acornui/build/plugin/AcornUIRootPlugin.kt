@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.polyforest.acornui.build.plugins
+package com.polyforest.acornui.build.plugin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * Provides a standard, opinionated configuration for the root build script in a multi-module project.
+ * Provides a standard, opinionated configuration for the root build script in an Acorn UI app project.
  *
- * Plugin:	 Multi-Module Root Plugin
- * ID:		 com.polyforest.root
- * Applies:	 None
+ * Plugin:   Acorn UI Root Plugin
+ * ID:       com.polyforest.acornui.root
+ * Applies:  [MMRootPlugin]
  */
-class MMRootPlugin : Plugin<Project> {
+class AcornUIRootPlugin : Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [target] object.
 	 */
