@@ -21,7 +21,6 @@ package com.polyforest.acornui.build
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileTree
-import org.gradle.api.plugins.ApplicationPlugin
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
@@ -42,12 +41,8 @@ class AppTargetFacade(
 		private val archiveExtensions: List<String> = listOf("war", "jar", "zip")
 ) {
 	private val target = mppExtension.targets.named(name)
-	private val allProjects
-		get() = try {
-			project.rootProject.subprojects - project.project(":$AP_BUILD_MODULE_NAME")
-		} catch (e: Exception) {
-			project.rootProject.subprojects
-		}
+	private val allProjects = project.rootProject.subprojects
+
 	private val mainCompilation
 		get() = target.map {
 			it.compilations.named<KotlinCompilationToRunnableFiles<KotlinCommonOptions>>(DEFAULT_MAIN_COMPILATION_NAME)
@@ -69,7 +64,7 @@ class AppTargetFacade(
 	 * then:
 	 * [mpSources] = commonSourceSetA + jsSourceSetA + jsSourceSetB
 	 */
-	val mpSources = mainCompilation.map { it.output.classesDirs }
+	private val mpSources = mainCompilation.map { it.output.classesDirs }
 
 	/**
 	 * All resources for a given multi-platform target's module
@@ -77,7 +72,7 @@ class AppTargetFacade(
 	 * Same as [mpSources], but for resources
 	 * @see [mpSources]
 	 */
-	val mpResources = mainCompilation.map {
+	private val mpResources = mainCompilation.map {
 		it.allKotlinSourceSets.fold(project.files()) { fc: FileCollection, sourceSet: KotlinSourceSet ->
 			fc + sourceSet.resources.sourceDirectories
 		}
@@ -137,8 +132,6 @@ class AppTargetFacade(
 	}
 
 	companion object {
-		private const val AP_BUILD_MODULE_NAME = "builder"
-		private const val APPLICATION_GROUP = ApplicationPlugin.APPLICATION_GROUP
 		const val DEFAULT_JS_TARGET_APP_TARGET_NAME = "js"
 		const val DEFAULT_JVM_TARGET_APP_TARGET_NAME = "jvm"
 		private const val DEFAULT_MAIN_COMPILATION_NAME = KotlinCompilation.MAIN_COMPILATION_NAME
