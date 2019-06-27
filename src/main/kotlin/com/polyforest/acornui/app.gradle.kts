@@ -16,13 +16,7 @@
 
 package com.polyforest.acornui
 
-import com.polyforest.acornui.App_gradle.FileProcessor
-import com.polyforest.acornui.build.AUI
-import com.polyforest.acornui.build.acornui
-import com.polyforest.acornui.build.acornuiDependencyNotation
-import com.polyforest.acornui.build.document
-import com.polyforest.acornui.build.maybeAddBasicResourcesAsResourceDir
-import com.polyforest.acornui.build.validateAcornUiHomeToUseBasicAssets
+import com.polyforest.acornui.build.*
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.invoke
@@ -33,7 +27,6 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import java.awt.Desktop
 import java.net.URI
-import kotlin.collections.set
 
 /**
  * Plugin:  com.polyforest.acornui.app
@@ -128,119 +121,6 @@ val webDistFolderStem = "wwwDist"
 val webDistFolder = webFolderRoot.resolve(webDistFolderStem)
 val ghDocsFolder = file("docs")
 val targetCompilations = { target: String -> kotlin.targets[target].compilations }
-typealias FileProcessor = (src: String, file: File) -> String
-
-/**
- * A utility class for applying a list of [FileProcessor] methods to a set of files.
- */
-class SourceFileManipulator {
-
-	private val fileTypeProcessorMap = hashMapOf<String, ArrayList<FileProcessor>>()
-
-	fun addProcessor(processor: FileProcessor, vararg fileExtension: String) {
-		for (extension in fileExtension) {
-			val extensionLower = extension.toLowerCase()
-			if (!fileTypeProcessorMap.containsKey(extension)) fileTypeProcessorMap[extensionLower] = ArrayList()
-			fileTypeProcessorMap[extensionLower]!!.add(processor)
-		}
-	}
-
-	/**
-	 * Applies added processors that match the [file]'s extension and its children recursively if [file] is a directory.
-	 *
-	 * @see    File.walkTopDown for traversal details
-	 */
-	fun process(file: File) {
-		for (i in file.walkTopDown()) {
-			if (i.isFile) {
-				val processors = fileTypeProcessorMap[i.extension.toLowerCase()] ?: continue
-				var src = i.readText()
-				for (processor in processors) {
-					src = processor(src, i)
-				}
-				i.writeText(src)
-			}
-		}
-	}
-}
-
-/**
- * Searches for script and css include elements and adds a cache buster query parameter to them.
- */
-object ScriptCacheBuster {
-
-	val extensions = listOf(
-		"asp", "aspx", "cshtml", "cfm", "go", "jsp", "jspx", "php", "php3", "php4", "phtml", "html", "htm", "rhtml",
-		"css"
-	)
-
-	private val regex = Regex("""([\w./\\]+)(\?[\w=&]*)(%VERSION%)""")
-
-	/**
-	 * Replaces %VERSION% tokens with the last modified timestamp.
-	 * The source must match the format:
-	 * foo/bar.ext?baz=%VERSION%
-	 * foo/bar.ext must be a local file.
-	 */
-	fun replaceVersionWithModTime(src: String, file: File): String {
-		return regex.replace(src) { match ->
-			val path = match.groups[1]!!.value
-			val relativeFile = File(file.parent, path)
-			if (relativeFile.exists()) path + match.groups[2]!!.value + relativeFile.lastModified()
-			else match.value
-		}
-	}
-}
-
-object KotlinMonkeyPatcher {
-
-	/**
-	 * Makes it all go weeeeee!
-	 */
-	fun optimizeProductionCode(src: String, file: File? = null): String {
-		var result = src
-		result = simplifyArrayListGet(result)
-		result = simplifyArrayListSet(result)
-		result = stripCce(result)
-		result = stripRangeCheck(result)
-		result += "function alwaysTrue() { return true; }"
-		return result
-	}
-
-	/**
-	 * Strips type checking that only results in a class cast exception.
-	 */
-	private fun stripCce(src: String): String {
-		return Regex("""Kotlin\.is(Type|Array|Char|CharSequence|Number)(\((.*?) \? tmp\$(?:_\d+)? : (Kotlin\.)?throw(\w*?)\(\))""").replace(
-			src,
-			"alwaysTrue\$2"
-		)
-	}
-
-	private fun stripRangeCheck(src: String): String {
-		return src.replace("this.rangeCheck_2lys7f${'$'}_0(index)", "index")
-	}
-
-	private fun simplifyArrayListGet(src: String): String {
-		return Regex("""ArrayList\.prototype\.get_za3lpa\$[\s]*=[\s]*function[\s]*\(index\)[\s]*\{([^}]+)};""")
-			.replace(src) {
-				"""ArrayList.prototype.get_za3lpa$ = function(index) { return this.array_hd7ov6${'$'}_0[index] };"""
-			}
-	}
-
-	private fun simplifyArrayListSet(src: String): String {
-		return Regex("""ArrayList\.prototype\.set_wxm5ur\$[\s]*=[\s]*function[\s]*\(index, element\)[\s]*\{([^}]+)};""")
-			.replace(src) {
-				"""
-						ArrayList.prototype.set_wxm5ur${'$'} = function (index, element) {
-			  				var previous = this.array_hd7ov6${'$'}_0[index];
-			  				this.array_hd7ov6${'$'}_0[index] = element;
-			  				return previous;
-						};
-					""".trimIndent()
-			}
-	}
-}
 
 // Setup basic skin directory as resource directory...
 maybeAddBasicResourcesAsResourceDir(project)
@@ -797,16 +677,3 @@ class AppTargetFacade(
 	}
 }
 
-class BuildTool(val project: Project, configurationName: String, val main: String, dependencies: List<String>? = null) {
-	val configuration = project.configurations.maybeCreate(configurationName)
-
-	init {
-		dependencies?.let { toolDependencies ->
-			project.dependencies {
-				toolDependencies.forEach {
-					configuration(it)
-				}
-			}
-		}
-	}
-}
