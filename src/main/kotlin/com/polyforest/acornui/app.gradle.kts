@@ -115,8 +115,6 @@ val webFolderStem = "www"
 val webFolder = webFolderRoot.resolve(webFolderStem)
 val webDistFolderStem = "wwwDist"
 val webDistFolder = webFolderRoot.resolve(webDistFolderStem)
-val ghDocsFolder = file("docs")
-val targetCompilations = { target: String -> kotlin.targets[target].compilations }
 
 // Setup basic skin directory as resource directory...
 maybeAddBasicResourcesAsResourceDir(project)
@@ -125,10 +123,6 @@ tasks {
 
 	// Helpers
 	// URI Helpers
-	// Handles null, blank, empty, and formatting
-	fun fmt(part: Any? = null, prefix: String = ""): String = part?.let {
-		fmt(prefix) + part.toString().trim()
-	} ?: ""
 
 	fun getIntellijBuiltInServerUri(project: Project) =
 			URI(
