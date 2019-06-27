@@ -26,13 +26,17 @@ import org.gradle.api.Project
  *
  * Plugin:	 Acorn UI App Plugin
  * ID:		 com.polyforest.acornui.app
- * Applies:	 [KotlinMMMPMainPlugin]
+ * Applies:	 [AcornUIBasicPlugin]
  */
 class AcornUIAppPlugin : Plugin<Project> {
 	/**
-	 * Apply this plugin to the given [target] object.
+	 * Apply this plugin to the given [project].
 	 */
-	override fun apply(target: Project) {
+	override fun apply(project: Project) {
 		TODO("not implemented")
+		val acornExtension = project.acornExtension ?: run {
+			project.pluginManager.apply(AcornUIBasicPlugin::class.java)
+			project.acornExtension as AcornUIPluginExtension
+		}
 	}
 }

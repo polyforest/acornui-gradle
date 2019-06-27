@@ -16,23 +16,5 @@
 
 package com.polyforest.acornui.build.plugin
 
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-
-/**
- * Provides entry point configuration for a multi-platform (JS & JVM) Kotlin module in a multi-module project.
- *
- * JS compilation main defaults to "call"
- *
- * Plugin:	 Kotlin Multi-Module Multi-Platform Main Plugin
- * ID:		 com.polyforest.kotlin.mm-mp-main
- * Applies:	 [KotlinMPBasicPlugin]
- */
-class KotlinMMMPMainPlugin : Plugin<Project> {
-	/**
-	 * Apply this plugin to the given [project].
-	 */
-	override fun apply(project: Project) {
-		TODO("not implemented")
-	}
+class AcornUIPluginExtension {
 }
