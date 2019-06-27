@@ -135,7 +135,7 @@ typealias FileProcessor = (src: String, file: File) -> String
  */
 class SourceFileManipulator {
 
-	private val fileTypeProcessorMap = stringMapOf<ArrayList<FileProcessor>>()
+	private val fileTypeProcessorMap = hashMapOf<String, ArrayList<FileProcessor>>()
 
 	fun addProcessor(processor: FileProcessor, vararg fileExtension: String) {
 		for (extension in fileExtension) {
@@ -809,15 +809,4 @@ class BuildTool(val project: Project, configurationName: String, val main: Strin
 			}
 		}
 	}
-}
-
-// Cannot use buildscript to put acornui-utils on the classpath for script plugin
-// Belongs to acornui-utils/src/commonMain/kotlin/com/acornui/collection/MapUtils.kt
-// TODO | De-inline this when plugin converts to non-script binary plugin
-var _stringMap: () -> MutableMap<String, Any?> = { HashMap() }
-
-fun <V> stringMapOf(vararg pairs: Pair<String, V>): MutableMap<String, V> {
-	// Pseudo-Code:TODO | Undo this once stable
-	// @Suppress("UNCHECKED_CAST")
-	return (_stringMap() as MutableMap<String, V>).apply { putAll(pairs) }
 }
