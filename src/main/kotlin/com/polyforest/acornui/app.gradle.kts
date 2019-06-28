@@ -167,6 +167,15 @@ tasks {
 		)
 	}
 
+	val texturePackerTool by lazy {
+		BuildTool(
+				project,
+				"auiTexturePackerTool",
+				"com.acornui.texturepacker.MainKt",
+				listOf(acornuiDependencyNotation("texture-packer-jvm"))
+		)
+	}
+
 
 	// Task Configuration Helpers
 	fun Copy.configureCommonStageTargetOutputForProcessingTask(
@@ -185,12 +194,10 @@ tasks {
 		inputs.dir(sourceDir).withPropertyName("src")
 		outputs.dir(sourceDir).withPropertyName("outputFiles")
 
-		args = listOf(
-				"-target=assets",
-				"-src=${sourceDir.canonicalPath}"
-		)
-		main = auiBuildTasksTool.main
-		classpath = auiBuildTasksTool.configuration
+		// The texture packer accepts either [source, destination], or [source, "-replaceMode"].
+		args = listOf(sourceDir.canonicalPath, "-replaceMode")
+		main = texturePackerTool.main
+		classpath = texturePackerTool.configuration
 	}
 
 	fun JavaExec.configureCommonWriteResourceManifestFileTask(targetName: String, resourcesRootDir: File) {
