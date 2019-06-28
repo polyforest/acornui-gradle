@@ -26,7 +26,7 @@ import org.gradle.api.Project
  * ID:		 com.polyforest.root
  * Applies:	 None
  */
-class MMRootPlugin : Plugin<Project> {
+class MmRootPlugin : Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [project].
 	 */

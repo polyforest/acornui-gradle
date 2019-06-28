@@ -24,7 +24,7 @@ import org.gradle.api.Project
  *
  * Plugin:   Acorn UI Root Plugin
  * ID:       com.polyforest.acornui.root
- * Applies:  [MMRootPlugin]
+ * Applies:  [MmRootPlugin]
  */
 class AcornUiRootPlugin : Plugin<Project> {
 	/**

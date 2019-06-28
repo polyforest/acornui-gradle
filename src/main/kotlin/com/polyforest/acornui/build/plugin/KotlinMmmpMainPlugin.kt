@@ -26,9 +26,9 @@ import org.gradle.api.Project
  *
  * Plugin:	 Kotlin Multi-Module Multi-Platform Main Plugin
  * ID:		 com.polyforest.kotlin.mm-mp-main
- * Applies:	 [KotlinMPBasicPlugin]
+ * Applies:	 [KotlinMpBasicPlugin]
  */
-class KotlinMMMPMainPlugin : Plugin<Project> {
+class KotlinMmmpMainPlugin : Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [project].
 	 */

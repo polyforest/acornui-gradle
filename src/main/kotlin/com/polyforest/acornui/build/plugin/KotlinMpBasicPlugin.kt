@@ -28,7 +28,7 @@ import org.gradle.api.Project
  * ID:  	 com.polyforest.kotlin.mp-basic
  * Applies:	 None
  */
-class KotlinMPBasicPlugin: Plugin<Project> {
+class KotlinMpBasicPlugin: Plugin<Project> {
 	/**
 	 * Apply this plugin to the given [project].
 	 */

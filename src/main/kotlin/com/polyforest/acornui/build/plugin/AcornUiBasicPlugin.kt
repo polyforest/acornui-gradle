@@ -34,7 +34,7 @@ private const val ACORNUI_EXTENSION_NAME: String = "acorn"
  *
  * Plugin:   Acorn UI Basic Plugin
  * ID:       com.polyforest.acornui.basic
- * Applies:	 [KotlinMPBasicPlugin]
+ * Applies:	 [KotlinMpBasicPlugin]
  */
 class AcornUiBasicPlugin : Plugin<Project> {
 	/**
