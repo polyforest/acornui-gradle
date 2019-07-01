@@ -33,6 +33,7 @@ import java.net.URI
 plugins {
 	id("com.polyforest.acornui.app-basic")
 	id("kotlin-dce-js")
+	idea
 }
 
 val acorn = AUI(project)
@@ -115,6 +116,12 @@ val webFolderStem = "www"
 val webFolder = webFolderRoot.resolve(webFolderStem)
 val webDistFolderStem = "wwwDist"
 val webDistFolder = webFolderRoot.resolve(webDistFolderStem)
+
+idea {
+	module {
+		excludeDirs = excludeDirs + listOf(webDistFolder, webFolder)
+	}
+}
 
 // Setup basic skin directory as resource directory...
 maybeAddBasicResourcesAsResourceDir(project)
