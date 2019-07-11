@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.acornui.plugins.app</groupId>
+  <artifactId>com.acornui.plugins.app.gradle.plugin</artifactId>
+  <version>0.1.1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20190711.171242</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20190711171242</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>0.1.1-20190711.171242-1</value>
+        <updated>20190711171242</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
