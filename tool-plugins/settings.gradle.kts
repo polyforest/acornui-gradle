@@ -21,14 +21,7 @@ val acornConfigPluginsVersion: String by extra
 pluginManagement {
 	repositories {
 		gradlePluginPortal()
-		mavenLocal()
 	}
-//    resolutionStrategy.eachPlugin {
-//        when {
-//            requested.id.namespace == "com.acornui.plugins" ->
-//                useVersion(acornConfigPluginsVersion)
-//        }
-//    }
 }
 
 rootProject.name = "tool-plugins"

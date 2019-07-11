@@ -15,8 +15,8 @@
  */
 
 plugins {
-	`kotlin-dsl`
-	`maven-publish`
+    `kotlin-dsl`
+    `maven-publish`
     //id("com.acornui.plugins.kotlin-mpp") version "0.1-SNAPSHOT" apply false
 }
 
@@ -31,12 +31,15 @@ plugins {
 //}
 
 repositories {
-	mavenLocal()
-	gradlePluginPortal()
+    mavenLocal()
+    gradlePluginPortal()
+    maven {
+        url = uri("https://github.com/polyforest/acornui-gradle-plugin/raw/repository")
+    }
 }
 
 kotlinDslPluginOptions {
-	experimentalWarning.set(false)
+    experimentalWarning.set(false)
 }
 
 val kotlinVersion: String by extra
@@ -44,20 +47,32 @@ val acornVersion: String by extra
 val acornConfigPluginsVersion: String by extra
 
 dependencies {
-	implementation(kotlin("gradle-plugin", version = kotlinVersion))
-	implementation("com.acornui.plugins:config-plugins:$acornConfigPluginsVersion")
-//	implementation("com.acornui:acornui-utils:$acornVersion")
-//	implementation("com.acornui:acornui-core:$acornVersion")
-//	implementation("com.acornui:acornui-lwjgl-backend:$acornVersion")
-//	implementation("com.acornui:acornui-texture-packer:$acornVersion")
+    implementation(kotlin("gradle-plugin", version = kotlinVersion))
+    implementation("com.acornui.plugins:config-plugins:$acornConfigPluginsVersion")
+    implementation("com.acornui:acornui-utils:$acornVersion")
+    implementation("com.acornui:acornui-core:$acornVersion")
+    implementation("com.acornui:acornui-lwjgl-backend:$acornVersion")
+    implementation("com.acornui:acornui-texture-packer:$acornVersion")
 }
 
 gradlePlugin {
-	plugins {
-		create("App") {
-			id = "$group.app"
-			implementationClass = "com.acornui.plugins.AppPlugin"
-			description = "Configuration of an Acorn UI Application."
-		}
-	}
+    plugins {
+        create("app") {
+            id = "$group.app"
+            implementationClass = "com.acornui.plugins.AppPlugin"
+            displayName = "Acorn UI Multi-Platform Application"
+            description = "Configuration of an Acorn UI Application."
+        }
+    }
+}
+
+val acornUiGradlePluginRepository: String? by extra
+if (acornUiGradlePluginRepository != null) {
+    publishing {
+        repositories {
+            maven {
+                url = uri(acornUiGradlePluginRepository!!)
+            }
+        }
+    }
 }
