@@ -94,6 +94,7 @@ class AppPlugin : Plugin<Project> {
 	private fun configureRunJvmTask(target: Project) {
 		with(target) {
 			val mainJvmClassName: String by extra
+			val jvmArgs: String? by extra
 			tasks.register<JavaExec>("runJvm") {
 				group = "application"
 				val jvmTarget: KotlinTarget = kotlin.targets["jvm"]
@@ -108,7 +109,7 @@ class AppPlugin : Plugin<Project> {
 				main = mainJvmClassName
 
 				@Suppress("INACCESSIBLE_TYPE")
-				jvmArgs = listOf("-ea", "-Ddebug=true") + if (OperatingSystem.current() == OperatingSystem.MAC_OS) listOf("-XstartOnFirstThread") else emptyList()
+				this.jvmArgs = (jvmArgs?.split(" ") ?: listOf("-ea", "-Ddebug=true")) + if (OperatingSystem.current() == OperatingSystem.MAC_OS) listOf("-XstartOnFirstThread") else emptyList()
 			}
 		}
 	}
