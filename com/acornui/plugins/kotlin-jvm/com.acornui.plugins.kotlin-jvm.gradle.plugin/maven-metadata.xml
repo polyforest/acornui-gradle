@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.acornui.plugins.kotlin-jvm</groupId>
+  <artifactId>com.acornui.plugins.kotlin-jvm.gradle.plugin</artifactId>
+  <versioning>
+    <versions>
+      <version>0.1.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20190711144425</lastUpdated>
+  </versioning>
+</metadata>

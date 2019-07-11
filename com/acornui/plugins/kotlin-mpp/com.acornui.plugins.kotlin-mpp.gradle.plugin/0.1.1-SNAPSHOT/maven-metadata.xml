@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.acornui.plugins.kotlin-mpp</groupId>
+  <artifactId>com.acornui.plugins.kotlin-mpp.gradle.plugin</artifactId>
+  <version>0.1.1-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20190711.144425</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20190711144425</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>0.1.1-20190711.144425-1</value>
+        <updated>20190711144425</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
