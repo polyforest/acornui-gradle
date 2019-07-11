@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.acornui</groupId>
+  <artifactId>acornui-lwjgl-backend</artifactId>
+  <versioning>
+    <versions>
+      <version>0.1.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20190711165906</lastUpdated>
+  </versioning>
+</metadata>

@@ -1,0 +1,36 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-game/0.1.1-SNAPSHOT/acornui-game-0.1.1-SNAPSHOT.module",
+    "group": "com.acornui",
+    "module": "acornui-game",
+    "version": "0.1.1-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "3exeu2txjvfedbiw34jdlaiwou"
+    }
+  },
+  "variants": [
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "files": [
+        {
+          "name": "acornui-game-metadata-0.1.1-SNAPSHOT.jar",
+          "url": "acornui-game-metadata-0.1.1-SNAPSHOT.jar",
+          "size": 41415,
+          "sha1": "9a707281bd15bef1cdb45fc6dff891b1f18fdbb7",
+          "md5": "7c7abdb9bd0f2dbc66cfaf19de8f08a9"
+        }
+      ]
+    }
+  ]
+}
