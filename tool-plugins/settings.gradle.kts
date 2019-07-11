@@ -33,4 +33,4 @@ pluginManagement {
 
 rootProject.name = "tool-plugins"
 
-
+enableFeaturePreview("GRADLE_METADATA")
