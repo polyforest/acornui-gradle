@@ -106,6 +106,9 @@ class AppPlugin : Plugin<Project> {
 				classpath = classes
 				workingDir = compilation.output.resourcesDir
 				main = mainJvmClassName
+
+				@Suppress("INACCESSIBLE_TYPE")
+				jvmArgs = listOf("-ea", "-Ddebug=true") + if (OperatingSystem.current() == OperatingSystem.MAC_OS) listOf("-XstartOnFirstThread") else emptyList()
 			}
 		}
 	}
