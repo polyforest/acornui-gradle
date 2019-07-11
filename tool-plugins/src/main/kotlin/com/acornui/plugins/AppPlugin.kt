@@ -3,7 +3,11 @@ package com.acornui.plugins
 import com.acornui.core.asset.AssetManager
 import com.acornui.core.di.inject
 import com.acornui.core.io.file.Files
+import com.acornui.io.file.FilesManifestSerializer
+import com.acornui.io.file.ManifestUtil
 import com.acornui.jvm.JvmHeadlessApplication
+import com.acornui.serialization.json
+import com.acornui.serialization.write
 import com.acornui.texturepacker.jvm.TexturePackerUtil
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -83,10 +87,16 @@ class AppPlugin : Plugin<Project> {
 	private fun configureResourceProcessing(target: Project) {
 		target.tasks.withType<ProcessResources> {
 			doLast {
+				logger.lifecycle("Packing assets")
+				logger.info("Assets root: ${destinationDir.absolutePath}")
 				JvmHeadlessApplication(destinationDir.path).start {
 					// Pack the assets in all directories in the dest folder with a name ending in "_unpacked"
 					TexturePackerUtil(inject(Files), inject(AssetManager)).packAssets(destinationDir, File("."))
 				}
+				logger.lifecycle("Writing manifest")
+				val assetsDir = File(destinationDir, "assets")
+				val manifest = ManifestUtil.createManifest(assetsDir, destinationDir)
+				File(assetsDir, "files.json").writeText(json.write(manifest, FilesManifestSerializer))
 			}
 		}
 	}

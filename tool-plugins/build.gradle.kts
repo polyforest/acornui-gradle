@@ -17,18 +17,7 @@
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    //id("com.acornui.plugins.kotlin-mpp") version "0.1-SNAPSHOT" apply false
 }
-
-//buildscript {
-//	repositories {
-//		mavenLocal()
-//		gradlePluginPortal()
-//	}
-//	dependencies {
-//		classpath("com.acornui.plugins.ConfigPlugins:0.1-SNAPSHOT")
-//	}
-//}
 
 repositories {
     mavenLocal()
