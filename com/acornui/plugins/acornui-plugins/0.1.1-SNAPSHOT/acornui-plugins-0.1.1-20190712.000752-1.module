@@ -2,7 +2,7 @@
   "formatVersion": "1.0",
   "component": {
     "group": "com.acornui.plugins",
-    "module": "tool-plugins",
+    "module": "acornui-plugins",
     "version": "0.1.1-SNAPSHOT",
     "attributes": {
       "org.gradle.status": "integration"
@@ -11,7 +11,7 @@
   "createdBy": {
     "gradle": {
       "version": "5.5",
-      "buildId": "tq4zhvmllnbyvkaavpstznrq2u"
+      "buildId": "ol5r3kvzfbhfpgcwugt6ujphiu"
     }
   },
   "variants": [
@@ -27,11 +27,11 @@
       },
       "files": [
         {
-          "name": "tool-plugins-0.1.1-SNAPSHOT.jar",
-          "url": "tool-plugins-0.1.1-SNAPSHOT.jar",
-          "size": 18271,
-          "sha1": "4fb966ace5e4d1849700195a7baecc7f748340d",
-          "md5": "1e6440e2e970906fb6208e1a26770a31"
+          "name": "acornui-plugins-0.1.1-SNAPSHOT.jar",
+          "url": "acornui-plugins-0.1.1-SNAPSHOT.jar",
+          "size": 26701,
+          "sha1": "b64733bf88a03baf3a3aa30fd1a50f7b7c8fb53d",
+          "md5": "ac5255f23213f010793b6fe29a66e51e"
         }
       ]
     },
@@ -91,11 +91,11 @@
       ],
       "files": [
         {
-          "name": "tool-plugins-0.1.1-SNAPSHOT.jar",
-          "url": "tool-plugins-0.1.1-SNAPSHOT.jar",
-          "size": 18271,
-          "sha1": "4fb966ace5e4d1849700195a7baecc7f748340d",
-          "md5": "1e6440e2e970906fb6208e1a26770a31"
+          "name": "acornui-plugins-0.1.1-SNAPSHOT.jar",
+          "url": "acornui-plugins-0.1.1-SNAPSHOT.jar",
+          "size": 26701,
+          "sha1": "b64733bf88a03baf3a3aa30fd1a50f7b7c8fb53d",
+          "md5": "ac5255f23213f010793b6fe29a66e51e"
         }
       ]
     }
