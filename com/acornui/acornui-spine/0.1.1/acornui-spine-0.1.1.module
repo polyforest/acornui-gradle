@@ -1,0 +1,84 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "group": "com.acornui",
+    "module": "acornui-spine",
+    "version": "0.1.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "7skpzltt3jf55ccoz56l7gcxgy"
+    }
+  },
+  "variants": [
+    {
+      "name": "js-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "available-at": {
+        "url": "../../acornui-spine-js/0.1.1/acornui-spine-js-0.1.1.module",
+        "group": "com.acornui",
+        "module": "acornui-spine-js",
+        "version": "0.1.1"
+      }
+    },
+    {
+      "name": "js-runtime",
+      "attributes": {
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "available-at": {
+        "url": "../../acornui-spine-js/0.1.1/acornui-spine-js-0.1.1.module",
+        "group": "com.acornui",
+        "module": "acornui-spine-js",
+        "version": "0.1.1"
+      }
+    },
+    {
+      "name": "jvm-api",
+      "attributes": {
+        "org.gradle.usage": "java-api-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "available-at": {
+        "url": "../../acornui-spine-jvm/0.1.1/acornui-spine-jvm-0.1.1.module",
+        "group": "com.acornui",
+        "module": "acornui-spine-jvm",
+        "version": "0.1.1"
+      }
+    },
+    {
+      "name": "jvm-runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "available-at": {
+        "url": "../../acornui-spine-jvm/0.1.1/acornui-spine-jvm-0.1.1.module",
+        "group": "com.acornui",
+        "module": "acornui-spine-jvm",
+        "version": "0.1.1"
+      }
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-spine-metadata/0.1.1/acornui-spine-metadata-0.1.1.module",
+        "group": "com.acornui",
+        "module": "acornui-spine-metadata",
+        "version": "0.1.1"
+      }
+    }
+  ]
+}

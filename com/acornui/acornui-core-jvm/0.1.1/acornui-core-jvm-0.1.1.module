@@ -1,0 +1,86 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-core/0.1.1/acornui-core-0.1.1.module",
+    "group": "com.acornui",
+    "module": "acornui-core",
+    "version": "0.1.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "7skpzltt3jf55ccoz56l7gcxgy"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvm-api",
+      "attributes": {
+        "org.gradle.usage": "java-api-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "acornui-core-jvm-0.1.1.jar",
+          "url": "acornui-core-jvm-0.1.1.jar",
+          "size": 3615039,
+          "sha1": "7a4bdfc2a765ab32dacc227b2afbcd28ee7a2a9",
+          "md5": "73b6cf702453aa6de029763bd6383c40"
+        }
+      ]
+    },
+    {
+      "name": "jvm-runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-utils",
+          "version": {}
+        }
+      ],
+      "files": [
+        {
+          "name": "acornui-core-jvm-0.1.1.jar",
+          "url": "acornui-core-jvm-0.1.1.jar",
+          "size": 3615039,
+          "sha1": "7a4bdfc2a765ab32dacc227b2afbcd28ee7a2a9",
+          "md5": "73b6cf702453aa6de029763bd6383c40"
+        }
+      ]
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-core-metadata/0.1.1/acornui-core-metadata-0.1.1.module",
+        "group": "com.acornui",
+        "module": "acornui-core-metadata",
+        "version": "0.1.1"
+      }
+    }
+  ]
+}
