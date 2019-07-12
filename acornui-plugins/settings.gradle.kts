@@ -24,6 +24,6 @@ pluginManagement {
 	}
 }
 
-rootProject.name = "tool-plugins"
+rootProject.name = "acornui-plugins"
 
 enableFeaturePreview("GRADLE_METADATA")

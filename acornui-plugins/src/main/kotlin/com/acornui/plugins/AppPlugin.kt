@@ -1,16 +1,14 @@
 package com.acornui.plugins
 
-import com.acornui.core.asset.AssetManager
-import com.acornui.core.di.inject
-import com.acornui.core.io.file.Files
 import com.acornui.io.file.FilesManifestSerializer
 import com.acornui.io.file.ManifestUtil
-import com.acornui.jvm.JvmHeadlessApplication
+import com.acornui.plugins.util.LoggerAdapter
 import com.acornui.serialization.json
 import com.acornui.serialization.write
 import com.acornui.texturepacker.jvm.TexturePackerUtil
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.*
@@ -25,6 +23,9 @@ import java.io.File
 class AppPlugin : Plugin<Project> {
 
 	override fun apply(target: Project) {
+		// Configure the acorn logger to log to Gradle.
+		LoggerAdapter.configure(target.logger)
+
 		target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
 		target.extensions.configure(multiPlatformConfig(target))
 
@@ -89,10 +90,10 @@ class AppPlugin : Plugin<Project> {
 			doLast {
 				logger.lifecycle("Packing assets")
 				logger.info("Assets root: ${destinationDir.absolutePath}")
-				JvmHeadlessApplication(destinationDir.path).start {
-					// Pack the assets in all directories in the dest folder with a name ending in "_unpacked"
-					TexturePackerUtil(inject(Files), inject(AssetManager)).packAssets(destinationDir, File("."))
-				}
+
+				// Pack the assets in all directories in the dest folder with a name ending in "_unpacked"
+				TexturePackerUtil.packAssets(destinationDir, File("."), quiet = true)
+
 				logger.lifecycle("Writing manifest")
 				val assetsDir = File(destinationDir, "assets")
 				val manifest = ManifestUtil.createManifest(assetsDir, destinationDir)
