@@ -17,7 +17,6 @@
 plugins {
     `kotlin-dsl`
     `maven-publish`
-//    id("com.gradle.plugin-publish") version "0.10.1"
 }
 
 repositories {
@@ -66,34 +65,3 @@ if (acornUiGradlePluginRepository != null) {
         }
     }
 }
-
-// In the future if we add release artifacts to the gradle plugin portal.
-//pluginBundle {
-//    website = "http://www.acornui.com/"
-//    vcsUrl = "https://github.com/polyforest/acornui"
-//    description = "Kotlin multi-platform configurations."
-//    tags = listOf("kotlin", "multi-platform", "configuration")
-//
-//    (plugins) {
-//        "kotlinMpp" {
-//            displayName = "Kotlin multi-platform configuration for Acorn UI"
-//            description = "Configures an Acorn UI library project for Kotlin multi-platform."
-//            tags = listOf("acornui", "kotlin", "configuration", "multi-platform")
-//            version = rootProject.version.toString()
-//        }
-//
-//        "kotlinJvm" {
-//            displayName = "Kotlin jvm configuration for Acorn UI"
-//            description = "Configures an Acorn UI library project for Kotlin jvm."
-//            tags = listOf("acornui", "kotlin", "configuration", "jvm")
-//            version = rootProject.version.toString()
-//        }
-//
-//        "kotlinJs" {
-//            displayName = "Kotlin js configuration for Acorn UI"
-//            description = "Configures an Acorn UI library project for Kotlin js."
-//            tags = listOf("acornui", "kotlin", "configuration", "js")
-//            version = rootProject.version.toString()
-//        }
-//    }
-//}

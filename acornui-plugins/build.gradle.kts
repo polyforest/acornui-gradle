@@ -23,8 +23,12 @@ repositories {
     mavenLocal()
     gradlePluginPortal()
     maven {
-        url = uri("https://github.com/polyforest/acornui-gradle-plugin/raw/repository")
+        url = uri("https://raw.githubusercontent.com/polyforest/acornui-gradle-plugin/repository")
     }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
 }
 
 kotlinDslPluginOptions {
@@ -37,11 +41,11 @@ val acornConfigPluginsVersion: String by extra
 
 dependencies {
     implementation(kotlin("gradle-plugin", version = kotlinVersion))
-    implementation("com.acornui.plugins:config-plugins:$acornConfigPluginsVersion")
     implementation("com.acornui:acornui-utils:$acornVersion")
     implementation("com.acornui:acornui-core:$acornVersion")
     implementation("com.acornui:acornui-lwjgl-backend:$acornVersion")
     implementation("com.acornui:acornui-texture-packer:$acornVersion")
+    implementation("com.acornui.plugins:config-plugins:$acornConfigPluginsVersion")
 }
 
 gradlePlugin {
@@ -51,6 +55,13 @@ gradlePlugin {
             implementationClass = "com.acornui.plugins.AppPlugin"
             displayName = "Acorn UI Multi-Platform Application"
             description = "Configuration of an Acorn UI Application."
+        }
+
+        create("root") {
+            id = "$group.root"
+            implementationClass = "com.acornui.plugins.RootPlugin"
+            displayName = "Root project plugin for a multi-module Acorn UI application."
+            description = "Configuration of a root project for a multi-module Acorn UI application."
         }
     }
 }

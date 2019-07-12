@@ -23,9 +23,6 @@ import java.io.File
 class AppPlugin : Plugin<Project> {
 
 	override fun apply(target: Project) {
-		// Configure the acorn logger to log to Gradle.
-		LoggerAdapter.configure(target.logger)
-
 		target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
 		target.extensions.configure(multiPlatformConfig(target))
 
