@@ -3,9 +3,11 @@
   <groupId>com.acornui.plugins.app</groupId>
   <artifactId>com.acornui.plugins.app.gradle.plugin</artifactId>
   <versioning>
+    <release>0.1.1</release>
     <versions>
       <version>0.1.1-SNAPSHOT</version>
+      <version>0.1.1</version>
     </versions>
-    <lastUpdated>20190712190752</lastUpdated>
+    <lastUpdated>20190712191046</lastUpdated>
   </versioning>
 </metadata>
