@@ -3,6 +3,8 @@ package com.acornui.plugins
 import com.acornui.core.toCamelCase
 import com.acornui.io.file.FilesManifestSerializer
 import com.acornui.io.file.ManifestUtil
+import com.acornui.plugins.tasks.AssembleWebTask
+import com.acornui.plugins.util.kotlinExt
 import com.acornui.serialization.json
 import com.acornui.serialization.write
 import com.acornui.texturepacker.jvm.TexturePackerUtil
@@ -23,14 +25,18 @@ class AppPlugin : Plugin<Project> {
 
 	override fun apply(target: Project) {
 		target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
+		target.pluginManager.apply("org.gradle.idea")
 		target.extensions.configure(multiPlatformConfig(target))
 
 		configureResourceProcessing(target)
 		configureRunJvmTask(target)
-	}
 
-	private val Project.kotlin: KotlinMultiplatformExtension
-		get() = extensions.getByType()
+		// Register the assembleWeb task that builds the www directory.
+		target.tasks.register<AssembleWebTask>("assembleWeb") {
+			group = "build"
+		}
+		target.tasks["assemble"].dependsOn("assembleWeb")
+	}
 
 	private fun multiPlatformConfig(target: Project): KotlinMultiplatformExtension.() -> Unit = {
 		js {
@@ -103,7 +109,7 @@ class AppPlugin : Plugin<Project> {
 			val jvmArgs: String? by extra
 			tasks.register<JavaExec>("runJvm") {
 				group = "application"
-				val jvmTarget: KotlinTarget = kotlin.targets["jvm"]
+				val jvmTarget: KotlinTarget = kotlinExt.targets["jvm"]
 				val compilation = jvmTarget.compilations["main"] as KotlinCompilationToRunnableFiles<KotlinCommonOptions>
 
 				val classes = files(

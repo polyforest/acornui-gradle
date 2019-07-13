@@ -20,7 +20,7 @@ class RootPlugin : Plugin<Project> {
             val acornVersion: String by extra
             val isComposite = acornUiHome != null && file(acornUiHome!!).exists()
             val r = this
-            logger.lifecycle("isComposite $isComposite")
+            logger.lifecycle("isComposite: $isComposite")
 
             preventSnapshotDependencyCaching()
 
