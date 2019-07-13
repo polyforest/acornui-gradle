@@ -1,0 +1,91 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-spine/0.1.2/acornui-spine-0.1.2.module",
+    "group": "com.acornui",
+    "module": "acornui-spine",
+    "version": "0.1.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "vvqejjkdfjd5dgdhhwq4ujep6u"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvm-api",
+      "attributes": {
+        "org.gradle.usage": "java-api-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "acornui-spine-jvm-0.1.2.jar",
+          "url": "acornui-spine-jvm-0.1.2.jar",
+          "size": 270312,
+          "sha1": "e977d168b32047cd8ecfabe0972a1fc1cecd4724",
+          "md5": "449234a4844d3473eca5914936096583"
+        }
+      ]
+    },
+    {
+      "name": "jvm-runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-core",
+          "version": {}
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-utils",
+          "version": {}
+        }
+      ],
+      "files": [
+        {
+          "name": "acornui-spine-jvm-0.1.2.jar",
+          "url": "acornui-spine-jvm-0.1.2.jar",
+          "size": 270312,
+          "sha1": "e977d168b32047cd8ecfabe0972a1fc1cecd4724",
+          "md5": "449234a4844d3473eca5914936096583"
+        }
+      ]
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-spine-metadata/0.1.2/acornui-spine-metadata-0.1.2.module",
+        "group": "com.acornui",
+        "module": "acornui-spine-metadata",
+        "version": "0.1.2"
+      }
+    }
+  ]
+}

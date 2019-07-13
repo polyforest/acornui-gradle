@@ -1,0 +1,36 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-texture-packer/0.1.2-SNAPSHOT/acornui-texture-packer-0.1.2-SNAPSHOT.module",
+    "group": "com.acornui",
+    "module": "acornui-texture-packer",
+    "version": "0.1.2-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "itve6niox5fqfeezwj6ld3sjwy"
+    }
+  },
+  "variants": [
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "files": [
+        {
+          "name": "acornui-texture-packer-metadata-0.1.2-SNAPSHOT.jar",
+          "url": "acornui-texture-packer-metadata-0.1.2-SNAPSHOT.jar",
+          "size": 14071,
+          "sha1": "264a766318280646d6f323a9f172267bcf7a82a9",
+          "md5": "b9b3af5acc33f4f9be30f167a470ce54"
+        }
+      ]
+    }
+  ]
+}

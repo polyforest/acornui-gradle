@@ -1,0 +1,36 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-spine/0.1.2/acornui-spine-0.1.2.module",
+    "group": "com.acornui",
+    "module": "acornui-spine",
+    "version": "0.1.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "vvqejjkdfjd5dgdhhwq4ujep6u"
+    }
+  },
+  "variants": [
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "files": [
+        {
+          "name": "acornui-spine-metadata-0.1.2.jar",
+          "url": "acornui-spine-metadata-0.1.2.jar",
+          "size": 66123,
+          "sha1": "596a8e2fd4238ac4b65efbc8f2f79b9876dc4d89",
+          "md5": "89758c711fcfb890a33de6adfc86e8d1"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-game/0.1.2/acornui-game-0.1.2.module",
+    "group": "com.acornui",
+    "module": "acornui-game",
+    "version": "0.1.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "vvqejjkdfjd5dgdhhwq4ujep6u"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvm-api",
+      "attributes": {
+        "org.gradle.usage": "java-api-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "acornui-game-jvm-0.1.2.jar",
+          "url": "acornui-game-jvm-0.1.2.jar",
+          "size": 247338,
+          "sha1": "be90093ab8d26819f374a09129dabdbd0edf3405",
+          "md5": "d45562be4222f0dbaf7f7d5a1db589f3"
+        }
+      ]
+    },
+    {
+      "name": "jvm-runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-core",
+          "version": {}
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-utils",
+          "version": {}
+        }
+      ],
+      "files": [
+        {
+          "name": "acornui-game-jvm-0.1.2.jar",
+          "url": "acornui-game-jvm-0.1.2.jar",
+          "size": 247338,
+          "sha1": "be90093ab8d26819f374a09129dabdbd0edf3405",
+          "md5": "d45562be4222f0dbaf7f7d5a1db589f3"
+        }
+      ]
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-game-metadata/0.1.2/acornui-game-metadata-0.1.2.module",
+        "group": "com.acornui",
+        "module": "acornui-game-metadata",
+        "version": "0.1.2"
+      }
+    }
+  ]
+}

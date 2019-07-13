@@ -1,0 +1,58 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "group": "com.acornui",
+    "module": "acornui-lwjgl-backend",
+    "version": "0.1.2-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "itve6niox5fqfeezwj6ld3sjwy"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvm-api",
+      "attributes": {
+        "org.gradle.usage": "java-api-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "available-at": {
+        "url": "../../acornui-lwjgl-backend-jvm/0.1.2-SNAPSHOT/acornui-lwjgl-backend-jvm-0.1.2-SNAPSHOT.module",
+        "group": "com.acornui",
+        "module": "acornui-lwjgl-backend-jvm",
+        "version": "0.1.2-SNAPSHOT"
+      }
+    },
+    {
+      "name": "jvm-runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "available-at": {
+        "url": "../../acornui-lwjgl-backend-jvm/0.1.2-SNAPSHOT/acornui-lwjgl-backend-jvm-0.1.2-SNAPSHOT.module",
+        "group": "com.acornui",
+        "module": "acornui-lwjgl-backend-jvm",
+        "version": "0.1.2-SNAPSHOT"
+      }
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-lwjgl-backend-metadata/0.1.2-SNAPSHOT/acornui-lwjgl-backend-metadata-0.1.2-SNAPSHOT.module",
+        "group": "com.acornui",
+        "module": "acornui-lwjgl-backend-metadata",
+        "version": "0.1.2-SNAPSHOT"
+      }
+    }
+  ]
+}

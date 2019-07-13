@@ -1,0 +1,81 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-utils/0.1.2/acornui-utils-0.1.2.module",
+    "group": "com.acornui",
+    "module": "acornui-utils",
+    "version": "0.1.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "vvqejjkdfjd5dgdhhwq4ujep6u"
+    }
+  },
+  "variants": [
+    {
+      "name": "jvm-api",
+      "attributes": {
+        "org.gradle.usage": "java-api-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "acornui-utils-jvm-0.1.2.jar",
+          "url": "acornui-utils-jvm-0.1.2.jar",
+          "size": 865663,
+          "sha1": "9c9c0a828b2cec7d0096f3e7caa3cf1b9aa4657",
+          "md5": "ffe1bc4de5a97948b46e25a1bdedcb02"
+        }
+      ]
+    },
+    {
+      "name": "jvm-runtime",
+      "attributes": {
+        "org.gradle.usage": "java-runtime-jars",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.3.30"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "acornui-utils-jvm-0.1.2.jar",
+          "url": "acornui-utils-jvm-0.1.2.jar",
+          "size": 865663,
+          "sha1": "9c9c0a828b2cec7d0096f3e7caa3cf1b9aa4657",
+          "md5": "ffe1bc4de5a97948b46e25a1bdedcb02"
+        }
+      ]
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-utils-metadata/0.1.2/acornui-utils-metadata-0.1.2.module",
+        "group": "com.acornui",
+        "module": "acornui-utils-metadata",
+        "version": "0.1.2"
+      }
+    }
+  ]
+}

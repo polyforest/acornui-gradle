@@ -1,0 +1,58 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "group": "com.acornui",
+    "module": "acornui-webgl-backend",
+    "version": "0.1.2",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "vvqejjkdfjd5dgdhhwq4ujep6u"
+    }
+  },
+  "variants": [
+    {
+      "name": "js-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "available-at": {
+        "url": "../../acornui-webgl-backend-js/0.1.2/acornui-webgl-backend-js-0.1.2.module",
+        "group": "com.acornui",
+        "module": "acornui-webgl-backend-js",
+        "version": "0.1.2"
+      }
+    },
+    {
+      "name": "js-runtime",
+      "attributes": {
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "available-at": {
+        "url": "../../acornui-webgl-backend-js/0.1.2/acornui-webgl-backend-js-0.1.2.module",
+        "group": "com.acornui",
+        "module": "acornui-webgl-backend-js",
+        "version": "0.1.2"
+      }
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-webgl-backend-metadata/0.1.2/acornui-webgl-backend-metadata-0.1.2.module",
+        "group": "com.acornui",
+        "module": "acornui-webgl-backend-metadata",
+        "version": "0.1.2"
+      }
+    }
+  ]
+}
