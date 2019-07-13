@@ -27,10 +27,6 @@ repositories {
     }
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
-}
-
 kotlinDslPluginOptions {
     experimentalWarning.set(false)
 }

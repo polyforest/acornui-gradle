@@ -1,14 +1,13 @@
 package com.acornui.plugins
 
+import com.acornui.core.toCamelCase
 import com.acornui.io.file.FilesManifestSerializer
 import com.acornui.io.file.ManifestUtil
-import com.acornui.plugins.util.LoggerAdapter
 import com.acornui.serialization.json
 import com.acornui.serialization.write
 import com.acornui.texturepacker.jvm.TexturePackerUtil
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.logging.LogLevel
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.*
@@ -101,7 +100,6 @@ class AppPlugin : Plugin<Project> {
 
 	private fun configureRunJvmTask(target: Project) {
 		with(target) {
-			val mainJvmClassName: String by extra
 			val jvmArgs: String? by extra
 			tasks.register<JavaExec>("runJvm") {
 				group = "application"
@@ -114,7 +112,7 @@ class AppPlugin : Plugin<Project> {
 				)
 				classpath = classes
 				workingDir = compilation.output.resourcesDir
-				main = mainJvmClassName
+				main = "${rootProject.group}.${rootProject.name}.jvm.${rootProject.name.toCamelCase().capitalize()}JvmKt"
 
 				@Suppress("INACCESSIBLE_TYPE")
 				this.jvmArgs = (jvmArgs?.split(" ") ?: listOf("-ea", "-Ddebug=true")) + if (OperatingSystem.current() == OperatingSystem.MAC_OS) listOf("-XstartOnFirstThread") else emptyList()
