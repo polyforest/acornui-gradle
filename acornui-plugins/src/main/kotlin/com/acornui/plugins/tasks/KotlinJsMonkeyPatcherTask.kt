@@ -5,13 +5,15 @@ import org.gradle.api.tasks.TaskAction
 
 open class KotlinJsMonkeyPatcherTask : SourceTask() {
 
+    private val alwaysTrue = "function alwaysTrue() { return true; }"
+
     @TaskAction
     fun executeTask() {
         include("**/*.js")
-        doLast {
-            source.forEach {
-                it.writeText(optimizeProductionCode(it.readText()))
-            }
+        source.forEach {
+            val src = it.readText()
+            if (!src.endsWith(alwaysTrue)) // Otherwise already patched.
+                it.writeText(optimizeProductionCode(src))
         }
     }
 
@@ -24,7 +26,8 @@ open class KotlinJsMonkeyPatcherTask : SourceTask() {
         result = simplifyArrayListSet(result)
         result = stripCce(result)
         result = stripRangeCheck(result)
-        result += "function alwaysTrue() { return true; }"
+        if (result != src)
+            result += alwaysTrue
         return result
     }
 
