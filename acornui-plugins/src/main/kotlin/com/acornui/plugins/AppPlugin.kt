@@ -27,7 +27,7 @@ class AppPlugin : Plugin<Project> {
         target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
         target.pluginManager.apply("org.gradle.idea")
         target.extensions.create<AcornUiApplicationExtension>("acornui").apply {
-            out = target.buildDir.resolve("out")
+            appResources = target.buildDir.resolve("appResources")
         }
         target.extensions.configure(multiPlatformConfig(target))
 
@@ -104,7 +104,7 @@ class AppPlugin : Plugin<Project> {
                     dependsOn("${platform}ProcessResources")
                     group = "build"
                     this.target = platform
-                    destination = target.acornui.out.resolve(platform)
+                    destination = target.acornui.appResources.resolve(platform)
                 }
 
             val packTask = target.tasks.register("pack${platformCapitalized}TextureAtlases") {
@@ -142,7 +142,7 @@ class AppPlugin : Plugin<Project> {
         // Register the assembleWeb task that builds the www directory.
         target.tasks.register<AssembleWebTask>("assembleWeb") {
             dependsOn("assembleJs", "compileKotlinJs")
-            combinedResourcesDir = target.acornui.out.resolve("js")
+            combinedResourcesDir = target.acornui.appResources.resolve("js")
             group = "build"
         }
         target.tasks["assemble"].finalizedBy("assembleWeb")
@@ -176,7 +176,7 @@ class AppPlugin : Plugin<Project> {
                     compilation.output.allOutputs
                 )
                 classpath = classes
-                workingDir = target.acornui.out.resolve("jvm")
+                workingDir = target.acornui.appResources.resolve("jvm")
                 main =
                     "${rootProject.group}.${rootProject.name}.jvm.${rootProject.name.toCamelCase().capitalize()}JvmKt"
 
@@ -191,7 +191,7 @@ class AppPlugin : Plugin<Project> {
 }
 
 open class AcornUiApplicationExtension {
-    lateinit var out: File
+    lateinit var appResources: File
 }
 
 fun Project.acornui(init: AcornUiApplicationExtension.() -> Unit) {
