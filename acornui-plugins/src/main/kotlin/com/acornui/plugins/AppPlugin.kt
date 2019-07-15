@@ -3,13 +3,17 @@ package com.acornui.plugins
 import com.acornui.core.toCamelCase
 import com.acornui.io.file.FilesManifestSerializer
 import com.acornui.io.file.ManifestUtil
+import com.acornui.plugins.tasks.AssembleWebProdTask
 import com.acornui.plugins.tasks.AssembleWebTask
+import com.acornui.plugins.tasks.DceTask
+import com.acornui.plugins.tasks.KotlinJsMonkeyPatcherTask
 import com.acornui.plugins.util.kotlinExt
 import com.acornui.serialization.json
 import com.acornui.serialization.write
 import com.acornui.texturepacker.jvm.TexturePackerUtil
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.*
@@ -26,6 +30,7 @@ class AppPlugin : Plugin<Project> {
 	override fun apply(target: Project) {
 		target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
 		target.pluginManager.apply("org.gradle.idea")
+//		target.pluginManager.apply("kotlin-dce-js")
 		target.extensions.configure(multiPlatformConfig(target))
 
 		configureResourceProcessing(target)
@@ -35,6 +40,29 @@ class AppPlugin : Plugin<Project> {
 		target.tasks.register<AssembleWebTask>("assembleWeb") {
 			group = "build"
 		}
+
+		target.tasks.register<AssembleWebProdTask>("assembleWebProd") {
+			dependsOn("assemble")
+			group = "build"
+			finalizedBy("prodDce")
+			finalizedBy("kotlinJsMonkeyPatch")
+		}
+
+		target.tasks.register<DceTask>("prodDce")
+		target.tasks.register<KotlinJsMonkeyPatcherTask>("kotlinJsMonkeyPatch") {
+			val assembleWebProd = project.tasks.named("assembleWebProd").get() as AssembleWebProdTask
+			source(assembleWebProd.destination)
+		}
+
+		target.tasks.named<Delete>("clean") {
+			doLast {
+				val assembleWeb = project.tasks.named("assembleWeb").get() as AssembleWebTask
+				delete(assembleWeb.destination)
+				val assembleWebProd = project.tasks.named("assembleWebProd").get() as AssembleWebProdTask
+				delete(assembleWebProd.destination)
+			}
+		}
+
 		target.tasks["assemble"].dependsOn("assembleWeb")
 	}
 

@@ -2,8 +2,11 @@ package com.acornui.plugins.tasks
 
 import com.acornui.plugins.util.kotlinExt
 import org.gradle.api.DefaultTask
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskAction
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.property
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import java.io.File
 
@@ -12,7 +15,8 @@ import java.io.File
 
 open class AssembleWebTask : DefaultTask() {
 
-    var destination: File = project.file("www")
+    var destination: File = project.buildDir.resolve("www")
+    var libPath = "lib"
 
     @TaskAction
     fun executeTask() {
@@ -25,8 +29,9 @@ open class AssembleWebTask : DefaultTask() {
         jsMain.output.classesDirs.forEach { folder ->
             project.copy {
                 from(folder)
-                into(File(destination, "lib"))
                 include("*.js", "*.js.map")
+                exclude("**/*.meta.js")
+                into(File(destination, "lib"))
             }
         }
 
@@ -36,11 +41,11 @@ open class AssembleWebTask : DefaultTask() {
                     includeEmptyDirs = false
                     include { fileTreeElement ->
                         val path = fileTreeElement.path
-                        (path.endsWith(".js") || path.endsWith(".js.map")) &&
+                        (path.endsWith(".js") || path.endsWith(".js.map")) && !path.endsWith(".meta.js") &&
                                 (path.startsWith("META-INF/resources/") || !path.startsWith("META-INF/"))
                     }
                 }
-                into(File(destination, "lib"))
+                into(File(destination, libPath))
             }
         }
 

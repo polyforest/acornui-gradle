@@ -36,6 +36,7 @@ val acornVersion: String by extra
 val acornConfigPluginsVersion: String by extra
 
 dependencies {
+    implementation(kotlin("compiler", version = kotlinVersion))
     implementation(kotlin("gradle-plugin", version = kotlinVersion))
     implementation("com.acornui:acornui-utils:$acornVersion")
     implementation("com.acornui:acornui-core:$acornVersion")
