@@ -3,10 +3,7 @@ package com.acornui.plugins
 import com.acornui.core.toCamelCase
 import com.acornui.io.file.FilesManifestSerializer
 import com.acornui.io.file.ManifestUtil
-import com.acornui.plugins.tasks.AssembleWebProdTask
-import com.acornui.plugins.tasks.AssembleWebTask
-import com.acornui.plugins.tasks.DceTask
-import com.acornui.plugins.tasks.KotlinJsMonkeyPatcherTask
+import com.acornui.plugins.tasks.*
 import com.acornui.plugins.util.kotlinExt
 import com.acornui.serialization.json
 import com.acornui.serialization.write
@@ -17,7 +14,6 @@ import org.gradle.api.tasks.Delete
 import org.gradle.api.tasks.JavaExec
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.*
-import org.gradle.language.jvm.tasks.ProcessResources
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationToRunnableFiles
@@ -27,130 +23,182 @@ import java.io.File
 @Suppress("unused")
 class AppPlugin : Plugin<Project> {
 
-	override fun apply(target: Project) {
-		target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
-		target.pluginManager.apply("org.gradle.idea")
-//		target.pluginManager.apply("kotlin-dce-js")
-		target.extensions.configure(multiPlatformConfig(target))
+    override fun apply(target: Project) {
+        target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
+        target.pluginManager.apply("org.gradle.idea")
+        target.extensions.create<AcornUiApplicationExtension>("acornui").apply {
+            out = target.buildDir.resolve("out")
+        }
+        target.extensions.configure(multiPlatformConfig(target))
 
-		configureResourceProcessing(target)
-		configureRunJvmTask(target)
+        runJvmTask(target)
+        registerAssetTasks(target)
+        registerWebTasks(target)
 
-		// Register the assembleWeb task that builds the www directory.
-		target.tasks.register<AssembleWebTask>("assembleWeb") {
-			group = "build"
-		}
+        target.tasks.named<Delete>("clean") {
+            doLast {
+                val assembleWeb = project.tasks.named("assembleWeb").get() as AssembleWebTask
+                delete(assembleWeb.destination)
+                val assembleWebProd = project.tasks.named("assembleWebProd").get() as AssembleWebProdTask
+                delete(assembleWebProd.destination)
+            }
+        }
+    }
 
-		target.tasks.register<AssembleWebProdTask>("assembleWebProd") {
-			dependsOn("assemble")
-			group = "build"
-			finalizedBy("prodDce")
-			finalizedBy("kotlinJsMonkeyPatch")
-		}
+    private fun multiPlatformConfig(target: Project): KotlinMultiplatformExtension.() -> Unit = {
+        js {
+            compilations.all {
+                kotlinOptions {
+                    main = "call"
+                }
+            }
+        }
 
-		target.tasks.register<DceTask>("prodDce")
-		target.tasks.register<KotlinJsMonkeyPatcherTask>("kotlinJsMonkeyPatch") {
-			val assembleWebProd = project.tasks.named("assembleWebProd").get() as AssembleWebProdTask
-			source(assembleWebProd.destination)
-		}
+        sourceSets {
+            @Suppress("UNUSED_VARIABLE")
+            val commonMain by getting {
+                dependencies {
+                    implementation("com.acornui:acornui-core")
+                    implementation("com.acornui:acornui-utils")
+                }
+            }
 
-		target.tasks.named<Delete>("clean") {
-			doLast {
-				val assembleWeb = project.tasks.named("assembleWeb").get() as AssembleWebTask
-				delete(assembleWeb.destination)
-				val assembleWebProd = project.tasks.named("assembleWebProd").get() as AssembleWebProdTask
-				delete(assembleWebProd.destination)
-			}
-		}
+            jvm().compilations["main"].defaultSourceSet {
+                dependencies {
+                    implementation("com.acornui:acornui-lwjgl-backend")
 
-		target.tasks["assemble"].dependsOn("assembleWeb")
-	}
+                    val lwjglVersion: String by target.extra
+                    val lwjglGroup = "org.lwjgl"
+                    val lwjglName = "lwjgl"
 
-	private fun multiPlatformConfig(target: Project): KotlinMultiplatformExtension.() -> Unit = {
-		js {
-			compilations.all {
-				kotlinOptions {
-					main = "call"
-				}
-			}
-		}
+                    @Suppress("INACCESSIBLE_TYPE")
+                    val os = when (OperatingSystem.current()) {
+                        OperatingSystem.LINUX -> "linux"
+                        OperatingSystem.MAC_OS -> "macos"
+                        OperatingSystem.WINDOWS -> "windows"
+                        else -> throw Exception("Unsupported operating system: ${OperatingSystem.current()}")
+                    }
+                    val extensions = arrayOf("glfw", "jemalloc", "opengl", "openal", "stb", "nfd", "tinyfd")
+                    runtimeOnly("$lwjglGroup:$lwjglName:$lwjglVersion:natives-$os")
+                    extensions.forEach {
+                        implementation("$lwjglGroup:$lwjglName-$it:$lwjglVersion")
+                        runtimeOnly("$lwjglGroup:$lwjglName-$it:$lwjglVersion:natives-$os")
+                    }
+                }
+            }
+            js().compilations["main"].defaultSourceSet {
+                dependencies {
+                    implementation("com.acornui:acornui-webgl-backend")
+                }
+            }
+        }
+    }
 
-		sourceSets {
-			@Suppress("UNUSED_VARIABLE")
-			val commonMain by getting {
-				dependencies {
-					implementation("com.acornui:acornui-core")
-					implementation("com.acornui:acornui-utils")
-				}
-			}
+    private fun registerAssetTasks(target: Project) {
+        val platforms = listOf("js", "jvm")
+        platforms.forEach { platform ->
+            val platformCapitalized = platform.capitalize()
 
-			jvm().compilations["main"].defaultSourceSet {
-				dependencies {
-					implementation("com.acornui:acornui-lwjgl-backend")
+            val combineResourcesTask =
+                target.tasks.register<CombineAppResourcesTask>("combine${platformCapitalized}Resources") {
+                    dependsOn("${platform}ProcessResources")
+                    group = "build"
+                    this.target = platform
+                    destination = target.acornui.out.resolve(platform)
+                }
 
-					val lwjglVersion: String by target.extra
-					val lwjglGroup = "org.lwjgl"
-					val lwjglName = "lwjgl"
+            val packTask = target.tasks.register("pack${platformCapitalized}TextureAtlases") {
+                dependsOn(combineResourcesTask)
+                doLast {
+                    // Pack the assets in all directories in the dest folder with a name ending in "_unpacked"
+                    val destination = combineResourcesTask.get().destination
+                    TexturePackerUtil.packAssets(destination, File("."), quiet = true)
+                }
+            }
 
-					@Suppress("INACCESSIBLE_TYPE")
-					val os = when (OperatingSystem.current()) {
-						OperatingSystem.LINUX -> "linux"
-						OperatingSystem.MAC_OS -> "macos"
-						OperatingSystem.WINDOWS -> "windows"
-						else -> throw Exception("Unsupported operating system: ${OperatingSystem.current()}")
-					}
-					val extensions = arrayOf("glfw", "jemalloc", "opengl", "openal", "stb", "nfd", "tinyfd")
-					runtimeOnly("$lwjglGroup:$lwjglName:$lwjglVersion:natives-$os")
-					extensions.forEach {
-						implementation("$lwjglGroup:$lwjglName-$it:$lwjglVersion")
-						runtimeOnly("$lwjglGroup:$lwjglName-$it:$lwjglVersion:natives-$os")
-					}
-				}
-			}
-			js().compilations["main"].defaultSourceSet {
-				dependencies {
-					implementation("com.acornui:acornui-webgl-backend")
-				}
-			}
-		}
-	}
+            val manifestTask = target.tasks.register("write${platformCapitalized}FilesManifest") {
+                dependsOn(combineResourcesTask)
+                // If the pack assets task is excluded, the manifest task should still work.
+                shouldRunAfter(packTask)
 
-	private fun configureResourceProcessing(target: Project) {
-		target.tasks.withType<ProcessResources> {
-			doLast {
-				logger.lifecycle("Packing assets")
-				logger.info("Assets root: ${destinationDir.absolutePath}")
+                doLast {
+                    val assetsDir = File(combineResourcesTask.get().destination, "assets")
+                    val manifest = ManifestUtil.createManifest(assetsDir, combineResourcesTask.get().destination)
+                    File(assetsDir, "files.json").writeText(json.write(manifest, FilesManifestSerializer))
+                }
+            }
 
-				// Pack the assets in all directories in the dest folder with a name ending in "_unpacked"
-				TexturePackerUtil.packAssets(destinationDir, File("."), quiet = true)
+            val assemblePlatform = target.tasks.register("assemble$platformCapitalized").configure {
+                group = "build"
+                dependsOn(combineResourcesTask, packTask, manifestTask)
+            }
+            target.tasks.named("assemble").configure {
+                dependsOn(assemblePlatform)
+            }
+        }
+    }
 
-				logger.lifecycle("Writing manifest")
-				val assetsDir = File(destinationDir, "assets")
-				val manifest = ManifestUtil.createManifest(assetsDir, destinationDir)
-				File(assetsDir, "files.json").writeText(json.write(manifest, FilesManifestSerializer))
-			}
-		}
-	}
+    private fun registerWebTasks(target: Project) {
+        // Register the assembleWeb task that builds the www directory.
+        target.tasks.register<AssembleWebTask>("assembleWeb") {
+            dependsOn("assembleJs", "compileKotlinJs")
+            combinedResourcesDir = target.acornui.out.resolve("js")
+            group = "build"
+        }
+        target.tasks["assemble"].finalizedBy("assembleWeb")
 
-	private fun configureRunJvmTask(target: Project) {
-		with(target) {
-			val jvmArgs: String? by extra
-			tasks.register<JavaExec>("runJvm") {
-				group = "application"
-				val jvmTarget: KotlinTarget = kotlinExt.targets["jvm"]
-				val compilation = jvmTarget.compilations["main"] as KotlinCompilationToRunnableFiles<KotlinCommonOptions>
+        target.tasks.register<AssembleWebProdTask>("assembleWebProd") {
+            dependsOn("assembleWeb")
+            group = "build"
+            finalizedBy("prodDce")
+            finalizedBy("kotlinJsMonkeyPatch")
+        }
 
-				val classes = files(
-						compilation.runtimeDependencyFiles,
-						compilation.output.allOutputs
-				)
-				classpath = classes
-				workingDir = compilation.output.resourcesDir
-				main = "${rootProject.group}.${rootProject.name}.jvm.${rootProject.name.toCamelCase().capitalize()}JvmKt"
+        target.tasks.register<DceTask>("prodDce")
+        target.tasks.register<KotlinJsMonkeyPatcherTask>("kotlinJsMonkeyPatch") {
+            val assembleWebProd = project.tasks.named("assembleWebProd").get() as AssembleWebProdTask
+            source(assembleWebProd.destination)
+        }
+    }
 
-				@Suppress("INACCESSIBLE_TYPE")
-				this.jvmArgs = (jvmArgs?.split(" ") ?: listOf("-ea", "-Ddebug=true")) + if (OperatingSystem.current() == OperatingSystem.MAC_OS) listOf("-XstartOnFirstThread") else emptyList()
-			}
-		}
-	}
+    private fun runJvmTask(target: Project) {
+        with(target) {
+            val jvmArgs: String? by extra
+            tasks.register<JavaExec>("runJvm") {
+                dependsOn("assembleJvm")
+                group = "application"
+                val jvmTarget: KotlinTarget = kotlinExt.targets["jvm"]
+                val compilation =
+                    jvmTarget.compilations["main"] as KotlinCompilationToRunnableFiles<KotlinCommonOptions>
+
+                val classes = files(
+                    compilation.runtimeDependencyFiles,
+                    compilation.output.allOutputs
+                )
+                classpath = classes
+                workingDir = target.acornui.out.resolve("jvm")
+                main =
+                    "${rootProject.group}.${rootProject.name}.jvm.${rootProject.name.toCamelCase().capitalize()}JvmKt"
+
+                @Suppress("INACCESSIBLE_TYPE")
+                this.jvmArgs = (jvmArgs?.split(" ") ?: listOf(
+                    "-ea",
+                    "-Ddebug=true"
+                )) + if (OperatingSystem.current() == OperatingSystem.MAC_OS) listOf("-XstartOnFirstThread") else emptyList()
+            }
+        }
+    }
 }
+
+open class AcornUiApplicationExtension {
+    lateinit var out: File
+}
+
+fun Project.acornui(init: AcornUiApplicationExtension.() -> Unit) {
+    the<AcornUiApplicationExtension>().apply(init)
+}
+
+val Project.acornui
+    get() : AcornUiApplicationExtension {
+        return the()
+    }

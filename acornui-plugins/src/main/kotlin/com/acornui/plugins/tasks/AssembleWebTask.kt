@@ -12,6 +12,7 @@ import java.io.File
 
 open class AssembleWebTask : DefaultTask() {
 
+    lateinit var combinedResourcesDir: File
     var destination: File = project.buildDir.resolve("www")
     var libPath = "lib"
 
@@ -28,13 +29,13 @@ open class AssembleWebTask : DefaultTask() {
         val jsMain = project.kotlinExt.targets["js"].compilations["main"] as KotlinJsCompilation
 
         project.sync {
-            from(jsMain.output.resourcesDir)
+            from(combinedResourcesDir)
             into(destination)
 
             filesMatching(replaceVersionStrPatterns) {
                 filter {
                     line ->
-                    replaceVersionWithModTime(line, jsMain.output.resourcesDir)
+                    replaceVersionWithModTime(line, combinedResourcesDir)
                 }
             }
 
