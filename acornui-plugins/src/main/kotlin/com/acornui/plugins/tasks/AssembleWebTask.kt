@@ -2,11 +2,8 @@ package com.acornui.plugins.tasks
 
 import com.acornui.plugins.util.kotlinExt
 import org.gradle.api.DefaultTask
-import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskAction
 import org.gradle.kotlin.dsl.get
-import org.gradle.kotlin.dsl.property
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import java.io.File
 
@@ -18,12 +15,29 @@ open class AssembleWebTask : DefaultTask() {
     var destination: File = project.buildDir.resolve("www")
     var libPath = "lib"
 
+    /**
+     * The following file patterns will be scanned for file.ext?version=%VERSION% matches, substituting %VERSION% with
+     * the relative file's modified timestamp.
+     */
+    var replaceVersionStrPatterns = listOf("asp", "aspx", "cshtml", "cfm", "go", "jsp", "jspx", "php", "php3", "php4", "phtml", "html", "htm", "rhtml", "css").map { "*.$it" }
+
+    private val versionMatch = Regex("""([\w./\\]+)(\?[\w=&]*)(%VERSION%)""")
+
     @TaskAction
     fun executeTask() {
         val jsMain = project.kotlinExt.targets["js"].compilations["main"] as KotlinJsCompilation
+
         project.sync {
             from(jsMain.output.resourcesDir)
             into(destination)
+
+            filesMatching(replaceVersionStrPatterns) {
+                filter {
+                    line ->
+                    replaceVersionWithModTime(line, jsMain.output.resourcesDir)
+                }
+            }
+
         }
 
         jsMain.output.classesDirs.forEach { folder ->
@@ -50,5 +64,22 @@ open class AssembleWebTask : DefaultTask() {
         }
 
         File(destination, "lib/files.js").writeText("var manifest = " + File(destination, "assets/files.json").readText())
+    }
+
+
+
+    /**
+     * Replaces %VERSION% tokens with the last modified timestamp.
+     * The source must match the format:
+     * foo/bar.ext?baz=%VERSION%
+     * foo/bar.ext must be a local file.
+     */
+    fun replaceVersionWithModTime(src: String, root: File): String {
+        return versionMatch.replace(src) { match ->
+            val path = match.groups[1]!!.value
+            val relativeFile = root.resolve(path)
+            if (relativeFile.exists()) path + match.groups[2]!!.value + relativeFile.lastModified()
+            else path + match.groups[2]!!.value + System.currentTimeMillis()
+        }
     }
 }
