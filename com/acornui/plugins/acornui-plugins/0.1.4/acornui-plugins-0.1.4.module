@@ -11,7 +11,7 @@
   "createdBy": {
     "gradle": {
       "version": "5.5",
-      "buildId": "ib75pavxrrd7xe7nmudkfytt7a"
+      "buildId": "weyg6okv5rgolelgighkty5nv4"
     }
   },
   "variants": [
@@ -29,9 +29,9 @@
         {
           "name": "acornui-plugins-0.1.4.jar",
           "url": "acornui-plugins-0.1.4.jar",
-          "size": 111331,
-          "sha1": "c7f463f7e13756d198af922e6c2d2d5719e24c32",
-          "md5": "ffc1f38adee12e31ef9ef83453e6d912"
+          "size": 111797,
+          "sha1": "f827cfce2d63050052cb5f8f49b19ee8e07c53f5",
+          "md5": "37cce3d1ca0ec1e9c8c523efe7f3879e"
         }
       ]
     },
@@ -100,9 +100,9 @@
         {
           "name": "acornui-plugins-0.1.4.jar",
           "url": "acornui-plugins-0.1.4.jar",
-          "size": 111331,
-          "sha1": "c7f463f7e13756d198af922e6c2d2d5719e24c32",
-          "md5": "ffc1f38adee12e31ef9ef83453e6d912"
+          "size": 111797,
+          "sha1": "f827cfce2d63050052cb5f8f49b19ee8e07c53f5",
+          "md5": "37cce3d1ca0ec1e9c8c523efe7f3879e"
         }
       ]
     }
