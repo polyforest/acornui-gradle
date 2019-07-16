@@ -128,11 +128,17 @@ class AppPlugin : Plugin<Project> {
                 }
             }
 
-            val assemblePlatform = target.tasks.register("assemble$platformCapitalized").configure {
+            val assemblePlatformResources = target.tasks.register("assemble${platformCapitalized}Resources") {
                 group = "build"
                 dependsOn(combineResourcesTask, packTask, manifestTask)
             }
-            target.tasks.named("assemble").configure {
+
+            val assemblePlatform = target.tasks.register("assemble$platformCapitalized") {
+                group = "build"
+                dependsOn(assemblePlatformResources, "compileKotlin$platformCapitalized")
+            }
+
+            target.tasks.named("assemble") {
                 dependsOn(assemblePlatform)
             }
         }
@@ -141,7 +147,7 @@ class AppPlugin : Plugin<Project> {
     private fun registerWebTasks(target: Project) {
         // Register the assembleWeb task that builds the www directory.
         target.tasks.register<AssembleWebTask>("assembleWeb") {
-            dependsOn("assembleJs", "compileKotlinJs")
+            dependsOn("assembleJs")
             combinedResourcesDir = target.acornui.appResources.resolve("js")
             group = "build"
         }
