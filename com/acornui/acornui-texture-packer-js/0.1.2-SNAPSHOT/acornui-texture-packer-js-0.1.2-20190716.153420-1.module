@@ -1,0 +1,91 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui-texture-packer/0.1.2-SNAPSHOT/acornui-texture-packer-0.1.2-SNAPSHOT.module",
+    "group": "com.acornui",
+    "module": "acornui-texture-packer",
+    "version": "0.1.2-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "ge6yfrit3bbzzp2e3f5krhp72e"
+    }
+  },
+  "variants": [
+    {
+      "name": "js-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "files": [
+        {
+          "name": "acornui-texture-packer-js-0.1.2-SNAPSHOT.jar",
+          "url": "acornui-texture-packer-js-0.1.2-SNAPSHOT.jar",
+          "size": 83039,
+          "sha1": "1c977aa3e3bc39466a6283571c48e057902acdf5",
+          "md5": "89ef5e1b18714664939e16263fdcb0f0"
+        }
+      ]
+    },
+    {
+      "name": "js-runtime",
+      "attributes": {
+        "org.gradle.usage": "kotlin-runtime",
+        "org.jetbrains.kotlin.platform.type": "js"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-js",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "1.3.30"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-core",
+          "version": {}
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-utils",
+          "version": {}
+        }
+      ],
+      "files": [
+        {
+          "name": "acornui-texture-packer-js-0.1.2-SNAPSHOT.jar",
+          "url": "acornui-texture-packer-js-0.1.2-SNAPSHOT.jar",
+          "size": 83039,
+          "sha1": "1c977aa3e3bc39466a6283571c48e057902acdf5",
+          "md5": "89ef5e1b18714664939e16263fdcb0f0"
+        }
+      ]
+    },
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "available-at": {
+        "url": "../../acornui-texture-packer-metadata/0.1.2-SNAPSHOT/acornui-texture-packer-metadata-0.1.2-SNAPSHOT.module",
+        "group": "com.acornui",
+        "module": "acornui-texture-packer-metadata",
+        "version": "0.1.2-SNAPSHOT"
+      }
+    }
+  ]
+}
