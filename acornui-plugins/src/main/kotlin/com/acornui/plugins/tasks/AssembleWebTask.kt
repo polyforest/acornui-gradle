@@ -13,7 +13,7 @@ import java.io.File
 open class AssembleWebTask : DefaultTask() {
 
     lateinit var combinedResourcesDir: File
-    var destination: File = project.buildDir.resolve("www")
+    lateinit var destination: File
     var libPath = "lib"
 
     /**
@@ -38,7 +38,6 @@ open class AssembleWebTask : DefaultTask() {
                     replaceVersionWithModTime(line, combinedResourcesDir)
                 }
             }
-
         }
 
         jsMain.output.classesDirs.forEach { folder ->

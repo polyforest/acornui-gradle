@@ -6,7 +6,7 @@ import java.io.File
 
 open class AssembleWebProdTask : DefaultTask() {
 
-    var destination: File = project.buildDir.resolve("wwwProd")
+    lateinit var destination: File
 
     @TaskAction
     fun executeTask() {
