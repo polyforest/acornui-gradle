@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="_gradle_dsl_groovy" pattern="lib:org.gradle.groovy..*" />
-</component>
