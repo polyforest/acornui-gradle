@@ -56,22 +56,23 @@ class RootPlugin : Plugin<Project> {
                         resolutionStrategy.dependencySubstitution {
                             listOf("utils", "core", "game", "spine", "test-utils").forEach {
                                 val id = ":acornui:acornui-$it"
-                                r.project(id) {
-                                    group = "com.acornui"
-                                    version = acornVersion
-                                }
                                 if (findProject(id) != null) {
+                                    r.project(id) {
+                                        group = "com.acornui"
+                                        version = acornVersion
+                                    }
                                     substitute(module("com.acornui:acornui-$it")).with(project(":acornui:acornui-$it"))
                                 }
                             }
                             listOf("lwjgl", "webgl").forEach {
                                 val id = ":acornui:backends:acornui-$it-backend"
-                                r.project(id) {
-                                    group = "com.acornui"
-                                    version = acornVersion
-                                }
-                                if (findProject(id) != null)
+                                if (findProject(id) != null) {
+                                    r.project(id) {
+                                        group = "com.acornui"
+                                        version = acornVersion
+                                    }
                                     substitute(module("com.acornui:acornui-$it-backend")).with(project(id))
+                                }
                             }
                         }
                     }

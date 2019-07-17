@@ -28,7 +28,7 @@ class AppPlugin : Plugin<Project> {
         target.pluginManager.apply("com.acornui.plugins.kotlin-mpp")
         target.pluginManager.apply("org.gradle.idea")
         target.extensions.create<AcornUiApplicationExtension>("acornui").apply {
-            appResources = target.buildDir.resolve("appResources")
+            appResources = target.buildDir.resolve("processedResources")
             www = target.buildDir.resolve("www")
             wwwProd = target.buildDir.resolve("wwwProd")
         }
@@ -110,7 +110,7 @@ class AppPlugin : Plugin<Project> {
                     processResources.get().didWork
                 }
                 doLast {
-                    val destination = acornui.appResources.resolve(platform)
+                    val destination = acornui.appResources.resolve("$platform/allMain")
                     combineResources(platform, destination)
 
                     // Pack the assets in all directories in the dest folder with a name ending in "_unpacked"
@@ -144,8 +144,9 @@ class AppPlugin : Plugin<Project> {
         // Register the assembleWeb task that builds the www directory.
         val assembleWeb = tasks.register<AssembleWebTask>("assembleWeb") {
             dependsOn(assembleJs)
+            group = "build"
 
-            combinedResourcesDir = acornui.appResources.resolve("js")
+            combinedResourcesDir = acornui.appResources.resolve("js/allMain")
             destination = acornui.www
         }
         tasks.named("assemble") {
@@ -183,7 +184,7 @@ class AppPlugin : Plugin<Project> {
                 compilation.output.allOutputs
             )
             classpath = classes
-            workingDir = acornui.appResources.resolve("jvm")
+            workingDir = acornui.appResources.resolve("jvm/allMain")
             main =
                 "${rootProject.group}.${rootProject.name}.jvm.${rootProject.name.toCamelCase().capitalize()}JvmKt"
 
