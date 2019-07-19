@@ -58,9 +58,7 @@ fun Project.applicationResourceTasks(platforms: Iterable<String>, compilations: 
 
             val writeManifest = tasks.register("${platform}WriteResourcesManifest") {
                 dependsOn(processAcornResources)
-                onlyIf {
-                    processAcornResources.get().didWork
-                }
+                onlyIfDidWork(processAcornResources)
                 doLast {
                     val assetsDir = allMainDir.resolve("assets")
                     val manifest = ManifestUtil.createManifest(assetsDir, allMainDir)
@@ -141,13 +139,12 @@ fun Project.appAssetsWebTasks() {
 
     tasks.named("assemble") {
         dependsOn(assembleWebProd)
-        onlyIf {
-            assembleWebProd.get().didWork
-        }
+        onlyIfDidWork(assembleWebProd)
     }
 
     tasks.register<DceTask>("prodDce") {
         dependsOn(assembleWebProd)
+        onlyIfDidWork(assembleWebProd)
     }
 
     tasks.register<KotlinJsMonkeyPatcherTask>("kotlinJsMonkeyPatch") {
