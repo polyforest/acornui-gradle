@@ -1,6 +1,6 @@
 package com.acornui.plugins
 
-import com.acornui.plugins.util.LoggerAdapter
+import com.acornui.plugins.logging.LoggerAdapter
 import com.acornui.plugins.util.preventSnapshotDependencyCaching
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -12,6 +12,7 @@ import org.gradle.kotlin.dsl.repositories
 class RootPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
+        target.pluginManager.apply("org.gradle.idea")
         // Configure the acorn logger to log to Gradle.
         LoggerAdapter.configure(target.logger)
 
@@ -25,10 +26,6 @@ class RootPlugin : Plugin<Project> {
             preventSnapshotDependencyCaching()
 
             allprojects {
-                apply {
-                    plugin("org.gradle.idea")
-                }
-
                 repositories {
                     mavenLocal()
                     jcenter()
@@ -38,12 +35,11 @@ class RootPlugin : Plugin<Project> {
                     }
                 }
 
-
                 configurations.all {
                     resolutionStrategy {
                         eachDependency {
                             when {
-                                requested.group == "com.acornui" -> {
+                                requested.group.startsWith("com.acornui") -> {
                                     useVersion(acornVersion)
                                 }
                             }
@@ -56,22 +52,23 @@ class RootPlugin : Plugin<Project> {
                         resolutionStrategy.dependencySubstitution {
                             listOf("utils", "core", "game", "spine", "test-utils").forEach {
                                 val id = ":acornui:acornui-$it"
-                                r.project(id) {
-                                    group = "com.acornui"
-                                    version = acornVersion
-                                }
                                 if (findProject(id) != null) {
+                                    r.project(id) {
+                                        group = "com.acornui"
+                                        version = acornVersion
+                                    }
                                     substitute(module("com.acornui:acornui-$it")).with(project(":acornui:acornui-$it"))
                                 }
                             }
                             listOf("lwjgl", "webgl").forEach {
                                 val id = ":acornui:backends:acornui-$it-backend"
-                                r.project(id) {
-                                    group = "com.acornui"
-                                    version = acornVersion
-                                }
-                                if (findProject(id) != null)
+                                if (findProject(id) != null) {
+                                    r.project(id) {
+                                        group = "com.acornui"
+                                        version = acornVersion
+                                    }
                                     substitute(module("com.acornui:acornui-$it-backend")).with(project(id))
+                                }
                             }
                         }
                     }

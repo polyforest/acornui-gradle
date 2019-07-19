@@ -1,19 +1,31 @@
+@file:Suppress("UnstableApiUsage")
+
 package com.acornui.plugins.tasks
 
-import org.gradle.api.tasks.SourceTask
+import org.gradle.api.DefaultTask
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.TaskAction
 
-open class KotlinJsMonkeyPatcherTask : SourceTask() {
+open class KotlinJsMonkeyPatcherTask @javax.inject.Inject constructor(objects: ObjectFactory) : DefaultTask() {
+
+    @InputDirectory
+    val sourceDir = objects.directoryProperty()
 
     private val alwaysTrue = "function alwaysTrue() { return true; }"
 
     @TaskAction
-    fun executeTask() {
-        include("**/*.js")
-        source.forEach {
-            val src = it.readText()
-            if (!src.endsWith(alwaysTrue)) // Otherwise already patched.
-                it.writeText(optimizeProductionCode(src))
+    fun execute() {
+        sourceDir.asFile.get().listFiles()?.forEach { srcFile ->
+            if (srcFile.extension.equals("js", ignoreCase = true)) {
+                val src = srcFile.readText()
+                if (src.endsWith(alwaysTrue)) {
+                    logger.warn("Already patched ${srcFile.path}")
+                    return@forEach
+                }
+                logger.info("Patching file ${srcFile.path}")
+                srcFile.writeText(optimizeProductionCode(src))
+            }
         }
     }
 

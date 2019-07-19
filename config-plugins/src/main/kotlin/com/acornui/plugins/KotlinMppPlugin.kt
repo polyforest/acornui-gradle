@@ -42,6 +42,10 @@ class KotlinMppPlugin : Plugin<Project> {
 				}
 			}
 
+			sourceSets.all {
+				languageSettings.progressiveMode = true
+			}
+
 			sourceSets {
 				@Suppress("UNUSED_VARIABLE")
 				val commonMain by getting {

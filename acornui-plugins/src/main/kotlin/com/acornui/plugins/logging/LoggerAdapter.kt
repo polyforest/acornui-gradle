@@ -1,4 +1,4 @@
-package com.acornui.plugins.util
+package com.acornui.plugins.logging
 
 import com.acornui.logging.Log
 import org.gradle.api.logging.LogLevel

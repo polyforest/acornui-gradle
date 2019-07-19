@@ -31,6 +31,25 @@ kotlinDslPluginOptions {
     experimentalWarning.set(false)
 }
 
+allprojects {
+    configurations.all {
+        // Gradle has a bug where snapshots aren't marked as changing when their versions are dynamically applied.
+        resolutionStrategy {
+            cacheChangingModulesFor(0, TimeUnit.SECONDS)
+            cacheDynamicVersionsFor(0, TimeUnit.SECONDS)
+        }
+        dependencies {
+            components {
+                all {
+                    if (id.version.endsWith("-SNAPSHOT")) {
+                        isChanging = true
+                    }
+                }
+            }
+        }
+    }
+}
+
 val kotlinVersion: String by extra
 val acornVersion: String by extra
 val acornConfigPluginsVersion: String by extra
@@ -49,7 +68,7 @@ gradlePlugin {
     plugins {
         create("app") {
             id = "$group.app"
-            implementationClass = "com.acornui.plugins.AppPlugin"
+            implementationClass = "com.acornui.plugins.AcornUiApplicationPlugin"
             displayName = "Acorn UI Multi-Platform Application"
             description = "Configuration of an Acorn UI Application."
         }
