@@ -4,6 +4,9 @@ package com.acornui.plugins.tasks
 
 import com.acornui.plugins.util.packAssets
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.Directory
+import org.gradle.api.file.FileCollection
+import org.gradle.api.file.FileTree
 import org.gradle.api.file.FileType
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.*
@@ -12,12 +15,43 @@ import org.gradle.work.Incremental
 import org.gradle.work.InputChanges
 import java.io.File
 
-open class AcornUiResourceProcessorTask @javax.inject.Inject constructor(objects: ObjectFactory) : DefaultTask() {
+open class AcornUiResourceProcessorTask @javax.inject.Inject constructor(private val objects: ObjectFactory) : DefaultTask() {
 
+    private val fileTrees = mutableListOf<FileTree>()
+
+    @get:SkipWhenEmpty
     @get:Incremental
     @get:PathSensitive(PathSensitivity.RELATIVE)
     @get:InputFiles
-    val inputs = objects.fileCollection()
+    val sources: FileCollection
+        get() = fileTrees.reduce(FileTree::plus)
+
+    /**
+     * Adds the given file tree to the list of sources.
+     */
+    fun from(tree: FileTree): AcornUiResourceProcessorTask {
+        fileTrees.add(tree)
+        return this
+    }
+
+    fun from(source: File): AcornUiResourceProcessorTask {
+        from(objects.fileCollection().from(source).asFileTree)
+        return this
+    }
+
+    fun from(sources: Iterable<File>): AcornUiResourceProcessorTask {
+        sources.map { from(it) }
+        return this
+    }
+
+    fun into(directory: File?) {
+        outputDir.set(directory)
+    }
+
+    fun into(directory: Directory?) {
+        outputDir.set(directory)
+    }
+
 
     /**
      * Folders ending in this suffix will be packed.
@@ -37,12 +71,14 @@ open class AcornUiResourceProcessorTask @javax.inject.Inject constructor(objects
         val unpackedSuffix = unpackedSuffix
         val directoriesToPack = mutableSetOf<Pair<File, File>>() // List of source folder to pack destination.
 
-        inputChanges.getFileChanges(inputs).forEach { change ->
+        inputChanges.getFileChanges(sources).forEach { change ->
             val relPath = change.normalizedPath
             if (relPath.isEmpty()) return@forEach
+
             val sourceFile = change.file
             val targetFile = outputDir.file(relPath).get().asFile
-            if (change.changeType == ChangeType.REMOVED) {
+
+            if (change.changeType == ChangeType.REMOVED || !sourceFile.exists()) {
                 if (targetFile.exists())
                     if (targetFile.isDirectory) targetFile.deleteRecursively() else targetFile.delete()
 

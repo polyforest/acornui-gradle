@@ -39,7 +39,7 @@ class RootPlugin : Plugin<Project> {
                     resolutionStrategy {
                         eachDependency {
                             when {
-                                requested.group == "com.acornui" -> {
+                                requested.group.startsWith("com.acornui") -> {
                                     useVersion(acornVersion)
                                 }
                             }

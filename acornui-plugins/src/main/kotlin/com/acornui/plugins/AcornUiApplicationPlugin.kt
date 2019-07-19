@@ -101,7 +101,7 @@ open class AcornUiApplicationPlugin : Plugin<Project> {
 private fun Project.runJvmTask() {
     val jvmArgs: String? by extra
     tasks.register<JavaExec>("runJvm") {
-        dependsOn("assembleJvm")
+        dependsOn("jvmAssemble")
         group = "application"
         val jvmTarget: KotlinTarget = kotlinExt.targets["jvm"]
         val compilation =
@@ -132,9 +132,9 @@ open class AcornUiApplicationExtension {
 
     /**
      * The directory to place the .js files.
-     * Relative to the [www] directory
+     * Relative to the [www] and [wwwProd] directories.
      */
-    var jsLibDir = "lib"
+    var jsLibPath = "lib"
 }
 
 fun Project.acornui(init: AcornUiApplicationExtension.() -> Unit) {
