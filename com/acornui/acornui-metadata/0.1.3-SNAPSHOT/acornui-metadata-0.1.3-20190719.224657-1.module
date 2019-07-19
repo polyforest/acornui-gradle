@@ -1,0 +1,36 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "url": "../../acornui/0.1.3-SNAPSHOT/acornui-0.1.3-SNAPSHOT.module",
+    "group": "com.acornui",
+    "module": "acornui",
+    "version": "0.1.3-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "5jetppaqbfh5zefskx4eunaobu"
+    }
+  },
+  "variants": [
+    {
+      "name": "metadata-api",
+      "attributes": {
+        "org.gradle.usage": "kotlin-api",
+        "org.jetbrains.kotlin.platform.type": "common"
+      },
+      "files": [
+        {
+          "name": "acornui-metadata-0.1.3-SNAPSHOT.jar",
+          "url": "acornui-metadata-0.1.3-SNAPSHOT.jar",
+          "size": 261,
+          "sha1": "d97730ee97560b2c997401b682c903327e778b9d",
+          "md5": "df8e415626f22166a920385f8c19844f"
+        }
+      ]
+    }
+  ]
+}

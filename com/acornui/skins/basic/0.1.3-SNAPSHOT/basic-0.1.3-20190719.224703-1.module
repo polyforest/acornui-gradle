@@ -1,0 +1,55 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "group": "com.acornui.skins",
+    "module": "basic",
+    "version": "0.1.3-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "5jetppaqbfh5zefskx4eunaobu"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 10,
+        "org.gradle.usage": "java-api-jars"
+      },
+      "files": [
+        {
+          "name": "basic-0.1.3-SNAPSHOT.jar",
+          "url": "basic-0.1.3-SNAPSHOT.jar",
+          "size": 5331332,
+          "sha1": "6ec4d6b46e7ecf2c082005e772bdd6e54732a63a",
+          "md5": "cc737111e2b65739aeafdbded7447fa"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 10,
+        "org.gradle.usage": "java-runtime-jars"
+      },
+      "files": [
+        {
+          "name": "basic-0.1.3-SNAPSHOT.jar",
+          "url": "basic-0.1.3-SNAPSHOT.jar",
+          "size": 5331332,
+          "sha1": "6ec4d6b46e7ecf2c082005e772bdd6e54732a63a",
+          "md5": "cc737111e2b65739aeafdbded7447fa"
+        }
+      ]
+    }
+  ]
+}
