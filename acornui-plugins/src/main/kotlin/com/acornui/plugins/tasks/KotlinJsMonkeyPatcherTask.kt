@@ -1,19 +1,44 @@
+@file:Suppress("UnstableApiUsage")
+
 package com.acornui.plugins.tasks
 
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileType
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.tasks.*
+import org.gradle.work.ChangeType
+import org.gradle.work.Incremental
+import org.gradle.work.InputChanges
 
-open class KotlinJsMonkeyPatcherTask : SourceTask() {
+open class KotlinJsMonkeyPatcherTask @javax.inject.Inject constructor(objects: ObjectFactory) : DefaultTask() {
+
+    @get:Incremental
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    @get:InputFiles
+    val inputs = objects.fileCollection()
+
+    @get:OutputDirectory
+    val outputDir = objects.directoryProperty()
 
     private val alwaysTrue = "function alwaysTrue() { return true; }"
 
     @TaskAction
-    fun executeTask() {
-        include("**/*.js")
-        source.forEach {
-            val src = it.readText()
-            if (!src.endsWith(alwaysTrue)) // Otherwise already patched.
-                it.writeText(optimizeProductionCode(src))
+    fun execute(inputChanges: InputChanges) {
+        inputChanges.getFileChanges(inputs).forEach { change ->
+            if (change.fileType == FileType.DIRECTORY) return@forEach
+            val srcFile = change.file
+            if (srcFile.extension.equals("js", ignoreCase = true)) {
+
+                val targetFile = outputDir.file(change.normalizedPath).get().asFile
+                if (change.changeType == ChangeType.REMOVED) {
+                    targetFile.delete()
+                } else {
+                    val src = srcFile.readText()
+                    logger.info("Patching file ${change.file.path}")
+                    targetFile.parentFile.mkdirs()
+                    targetFile.writeText(optimizeProductionCode(src))
+                }
+            }
         }
     }
 

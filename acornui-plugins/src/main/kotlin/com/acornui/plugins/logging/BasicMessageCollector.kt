@@ -1,5 +1,4 @@
-package com.acornui.plugins.util
-
+package com.acornui.plugins.logging
 
 import org.gradle.api.logging.Logger
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation

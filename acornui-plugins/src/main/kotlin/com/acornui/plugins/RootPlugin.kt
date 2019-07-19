@@ -1,6 +1,6 @@
 package com.acornui.plugins
 
-import com.acornui.plugins.util.LoggerAdapter
+import com.acornui.plugins.logging.LoggerAdapter
 import com.acornui.plugins.util.preventSnapshotDependencyCaching
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -12,6 +12,7 @@ import org.gradle.kotlin.dsl.repositories
 class RootPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
+        target.pluginManager.apply("org.gradle.idea")
         // Configure the acorn logger to log to Gradle.
         LoggerAdapter.configure(target.logger)
 
@@ -25,10 +26,6 @@ class RootPlugin : Plugin<Project> {
             preventSnapshotDependencyCaching()
 
             allprojects {
-                apply {
-                    plugin("org.gradle.idea")
-                }
-
                 repositories {
                     mavenLocal()
                     jcenter()
@@ -37,7 +34,6 @@ class RootPlugin : Plugin<Project> {
                         url = uri("https://raw.githubusercontent.com/polyforest/acornui-gradle-plugin/repository")
                     }
                 }
-
 
                 configurations.all {
                     resolutionStrategy {

@@ -1,6 +1,7 @@
 package com.acornui.plugins.tasks
 
-import com.acornui.plugins.util.BasicMessageCollector
+import com.acornui.plugins.acornui
+import com.acornui.plugins.logging.BasicMessageCollector
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.jetbrains.kotlin.cli.js.dce.K2JSDce
@@ -18,18 +19,16 @@ open class DceTask : DefaultTask() {
 
     @TaskAction
     fun executeTask() {
-        val assembleWeb = (project.tasks.named("assembleWeb").get() as AssembleWebTask)
-        val assembleWebProd = (project.tasks.named("assembleWebProd").get() as AssembleWebProdTask)
-        val destination = assembleWebProd.destination
+        val destination = project.acornui.wwwProd
 
-        val assembleWebDir = assembleWeb.destination
-        val folder = File(destination, assembleWeb.libPath)
+        val assembleWebDir = project.acornui.www
+        val folder = File(destination, project.acornui.jsLibDir)
         val inputFiles: Sequence<File> = folder.listFiles()!!.asSequence()
             .filter { !it.isDirectory }
             .filter { it.name.endsWith(".js") }
             .filter { assembleWebDir.resolve(it.toRelativeString(destination) + ".map").exists() }
 
-
+        logger.info("Dead Code Elimination on files: " + inputFiles.map { it.absolutePath }.toList())
         val dce = K2JSDce()
         val args = dce.createArguments().apply {
             declarationsToKeep = keep.toTypedArray()
@@ -40,7 +39,5 @@ open class DceTask : DefaultTask() {
         }
         val exitCode = dce.exec(BasicMessageCollector(logger), Services.EMPTY, args)
         throwGradleExceptionIfError(exitCode)
-
-
     }
 }
