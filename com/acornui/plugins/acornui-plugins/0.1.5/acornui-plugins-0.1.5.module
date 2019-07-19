@@ -1,0 +1,110 @@
+{
+  "formatVersion": "1.0",
+  "component": {
+    "group": "com.acornui.plugins",
+    "module": "acornui-plugins",
+    "version": "0.1.5",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "5.5",
+      "buildId": "x53uzlbvnzedxevbbo776ea43a"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.usage": "java-api-jars",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "acornui-plugins-0.1.5.jar",
+          "url": "acornui-plugins-0.1.5.jar",
+          "size": 123078,
+          "sha1": "75c29ca4bcf4e0bee905ed173cd92a771abba11",
+          "md5": "265bc71eb42110e702a5d6f5bf7e5b64"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.usage": "java-runtime-jars",
+        "org.jetbrains.kotlin.localToProject": "public",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-compiler",
+          "version": {
+            "requires": "1.3.31"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-gradle-plugin",
+          "version": {
+            "requires": "1.3.31"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-utils",
+          "version": {
+            "requires": "0.1.3-SNAPSHOT"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-core",
+          "version": {
+            "requires": "0.1.3-SNAPSHOT"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-lwjgl-backend",
+          "version": {
+            "requires": "0.1.3-SNAPSHOT"
+          }
+        },
+        {
+          "group": "com.acornui",
+          "module": "acornui-texture-packer",
+          "version": {
+            "requires": "0.1.3-SNAPSHOT"
+          }
+        },
+        {
+          "group": "com.acornui.plugins",
+          "module": "config-plugins",
+          "version": {
+            "requires": "0.1.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "acornui-plugins-0.1.5.jar",
+          "url": "acornui-plugins-0.1.5.jar",
+          "size": 123078,
+          "sha1": "75c29ca4bcf4e0bee905ed173cd92a771abba11",
+          "md5": "265bc71eb42110e702a5d6f5bf7e5b64"
+        }
+      ]
+    }
+  ]
+}
