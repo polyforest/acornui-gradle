@@ -12,7 +12,6 @@ import org.gradle.kotlin.dsl.repositories
 class RootPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
-        target.pluginManager.apply("org.gradle.idea")
         // Configure the acorn logger to log to Gradle.
         LoggerAdapter.configure(target.logger)
 
@@ -26,6 +25,7 @@ class RootPlugin : Plugin<Project> {
             preventSnapshotDependencyCaching()
 
             allprojects {
+                project.pluginManager.apply("org.gradle.idea")
                 repositories {
                     mavenLocal()
                     jcenter()
