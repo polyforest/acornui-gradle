@@ -163,13 +163,12 @@ fun Project.appAssetsWebTasks() {
         }
     }
 
-    val prodLibDir = acornui.wwwProd.resolve(acornui.jsLibPath)
-
     tasks.named("assemble") {
         dependsOn(webAssemble, webProdAssemble)
     }
 
     val jsDce = tasks.register<DceTask>("jsDce") {
+        val prodLibDir = acornui.wwwProd.resolve(acornui.jsLibPath)
         source.from(kotlinMppRuntimeDependencies(project, "js"))
         outputDir.set(prodLibDir)
 
@@ -180,7 +179,7 @@ fun Project.appAssetsWebTasks() {
 
     tasks.register<KotlinJsMonkeyPatcherTask>("jsOptimize") {
         shouldRunAfter(jsDce)
-        sourceDir.set(prodLibDir)
+        sourceDir.set(acornui.wwwProd.resolve(acornui.jsLibPath))
     }
 
 }
