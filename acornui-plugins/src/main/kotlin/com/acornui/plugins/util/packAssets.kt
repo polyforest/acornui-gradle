@@ -4,6 +4,7 @@ import com.acornui.async.launch
 import com.acornui.core.asset.AssetManager
 import com.acornui.core.di.inject
 import com.acornui.core.io.file.Files
+import com.acornui.io.file.relativePath2
 import com.acornui.jvm.JvmHeadlessApplication
 import com.acornui.serialization.json
 import com.acornui.texturepacker.AcornTexturePacker
@@ -16,7 +17,8 @@ fun packAssets(srcDir: File, destDir: File, unpackedSuffix: String) {
         val assets = inject(AssetManager)
 
         val writer = JvmTextureAtlasWriter()
-        val dirEntry = files.getDir(srcDir.path)!!
+        val rel = File(".").relativePath2(srcDir)
+        val dirEntry = files.getDir(rel) ?: error("Could not resolve directory $rel")
 
         val atlasName = srcDir.name.removeSuffix(unpackedSuffix)
         launch {
