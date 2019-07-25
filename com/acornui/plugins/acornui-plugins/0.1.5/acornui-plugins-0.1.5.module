@@ -11,7 +11,7 @@
   "createdBy": {
     "gradle": {
       "version": "5.5",
-      "buildId": "irvf5wsyhnhpdabmc7fakoa66y"
+      "buildId": "5uy4kisrkzgwfmbbshsc7sip7u"
     }
   },
   "variants": [
@@ -20,7 +20,7 @@
       "attributes": {
         "org.gradle.category": "library",
         "org.gradle.dependency.bundling": "external",
-        "org.gradle.jvm.version": 11,
+        "org.gradle.jvm.version": 8,
         "org.gradle.usage": "java-api-jars",
         "org.jetbrains.kotlin.localToProject": "public",
         "org.jetbrains.kotlin.platform.type": "jvm"
@@ -30,8 +30,8 @@
           "name": "acornui-plugins-0.1.5.jar",
           "url": "acornui-plugins-0.1.5.jar",
           "size": 129083,
-          "sha1": "6d145ec64b86f9ba018602c89b7d4d70fc2b168b",
-          "md5": "495e0b897f9161740fff88496c136e64"
+          "sha1": "125b91072dbb213986a72d4876d0c01b89271a34",
+          "md5": "ff29536ce4b3ff7723a3fe387406374c"
         }
       ]
     },
@@ -40,7 +40,7 @@
       "attributes": {
         "org.gradle.category": "library",
         "org.gradle.dependency.bundling": "external",
-        "org.gradle.jvm.version": 11,
+        "org.gradle.jvm.version": 8,
         "org.gradle.usage": "java-runtime-jars",
         "org.jetbrains.kotlin.localToProject": "public",
         "org.jetbrains.kotlin.platform.type": "jvm"
@@ -101,8 +101,8 @@
           "name": "acornui-plugins-0.1.5.jar",
           "url": "acornui-plugins-0.1.5.jar",
           "size": 129083,
-          "sha1": "6d145ec64b86f9ba018602c89b7d4d70fc2b168b",
-          "md5": "495e0b897f9161740fff88496c136e64"
+          "sha1": "125b91072dbb213986a72d4876d0c01b89271a34",
+          "md5": "ff29536ce4b3ff7723a3fe387406374c"
         }
       ]
     }
